@@ -30,5 +30,12 @@ class BoardControllerTest {
                 .andExpect(content().string("Hello World"))
                 .andDo(print());
     }
+    
+    @Test
+    @DisplayName("Board Controller 기본 테스트")
+    public void board() throws Exception {
+        mockMvc.perform(get("/board"))
+                .andExpect(status().isOk());
+    }
 
 }

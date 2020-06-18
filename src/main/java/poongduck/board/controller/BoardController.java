@@ -23,7 +23,13 @@ public class BoardController {
 	public ModelAndView openBoardList(ModelMap model) throws Exception{
 		ModelAndView mv = new ModelAndView("/board/boardList");
 		
+		BoardEntity be = new BoardEntity();
+		be.setId(1);
+		be.setUser_id("sunlike0301");
+		be.setContents("내 목숨을 아이어에");
+
 		List<BoardEntity> list = new ArrayList<BoardEntity>();
+		list.add(be);
 		mv.addObject("list", list);
 		
 		return mv;

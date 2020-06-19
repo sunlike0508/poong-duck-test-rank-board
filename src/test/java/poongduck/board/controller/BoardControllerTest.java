@@ -17,18 +17,14 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.result.RequestResultMatchers;
-import org.springframework.web.servlet.ModelAndView;
+import org.unitils.reflectionassert.ReflectionComparatorMode;
 
-import com.mysql.cj.Session;
-import com.mysql.cj.xdevapi.Result;
-
-import net.bytebuddy.agent.VirtualMachine.ForHotSpot.Connection.Response;
 import poongduck.board.entity.BoardEntity;
+import poongduck.board.service.BoardService;
+
+import static org.unitils.reflectionassert.ReflectionAssert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -37,16 +33,9 @@ class BoardControllerTest {
 
 	@Autowired
     MockMvc mockMvc;
-
-	@Disabled
-    @Test
-    @DisplayName("hello controller 작동 테스트")
-    public void hello() throws Exception {
-        mockMvc.perform(get("/hello"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Hello World"))
-                .andDo(print());
-    }
+	
+	@Autowired
+	BoardService boardService;
     
     @Test
     @DisplayName("Board Controller 기본 테스트")
@@ -63,8 +52,25 @@ class BoardControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("/board/boardList"))
                 .andExpect(model().attributeExists("list"))
-                .andExpect(model().attribute("list", list.get(0)))
+                .andExpect(model().attribute("list", list))
                 .andDo(print());
+    }
+    
+    @Test
+    @DisplayName("Board Service 메소드 기본 테스트")
+    public void test_boardService_basic() throws Exception {
+    	
+    	BoardEntity be = new BoardEntity();
+		be.setId(1);
+		be.setUser_id("sunlike0301");
+		be.setContents("내 목숨을 아이어에");
+		
+		List<BoardEntity> expectList = new ArrayList<BoardEntity>();
+		expectList.add(be);
+    	
+    	List<BoardEntity> actualList = boardService.selectBoardList();
+		
+		assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_ORDER);
     }
 
 }

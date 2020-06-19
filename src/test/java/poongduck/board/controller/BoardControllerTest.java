@@ -29,7 +29,7 @@ import static org.unitils.reflectionassert.ReflectionAssert.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
-class BoardControllerTest {
+class BoardControllerTest implements createBoardEntityListForTest {
 
 	@Autowired
     MockMvc mockMvc;
@@ -40,19 +40,13 @@ class BoardControllerTest {
     @Test
     @DisplayName("Board Controller 기본 테스트")
     public void board() throws Exception {
-    	BoardEntity be = new BoardEntity();
-		be.setId(1);
-		be.setUser_id("sunlike0301");
-		be.setContents("내 목숨을 아이어에");
-		
-		List<BoardEntity> list = new ArrayList<BoardEntity>();
-		list.add(be);
+    	List<BoardEntity> expectList = createBoardListFroTest();
     	
         mockMvc.perform(get("/board"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("/board/boardList"))
                 .andExpect(model().attributeExists("list"))
-                .andExpect(model().attribute("list", list))
+                .andExpect(model().attribute("list", expectList))
                 .andDo(print());
     }
     
@@ -60,17 +54,22 @@ class BoardControllerTest {
     @DisplayName("Board Service 메소드 기본 테스트")
     public void test_boardService_basic() throws Exception {
     	
-    	BoardEntity be = new BoardEntity();
-		be.setId(1);
-		be.setUser_id("sunlike0301");
-		be.setContents("내 목숨을 아이어에");
-		
-		List<BoardEntity> expectList = new ArrayList<BoardEntity>();
-		expectList.add(be);
+    	List<BoardEntity> expectList = createBoardListFroTest();
     	
     	List<BoardEntity> actualList = boardService.selectBoardList();
 		
 		assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_ORDER);
     }
+    
+	public List<BoardEntity> createBoardListFroTest() {
+		BoardEntity be = new BoardEntity();
+		be.setId(1);
+		be.setUser_id("sunlike0301");
+		be.setContents("내 목숨을 아이어에");
+		
+		List<BoardEntity> list = new ArrayList<BoardEntity>();
+		list.add(be);
+		return list;
+	}
 
 }

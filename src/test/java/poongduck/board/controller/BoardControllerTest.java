@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
 
 import poongduck.board.entity.BoardEntity;
+import poongduck.board.repository.BoardRepository;
 import poongduck.board.service.BoardService;
 
 import static org.unitils.reflectionassert.ReflectionAssert.*;
@@ -36,7 +38,10 @@ class BoardControllerTest implements createBoardEntityListForTest {
 	
 	@Autowired
 	BoardService boardService;
-    
+	
+	@Mock
+	BoardRepository boardRepository;
+	    
     @Test
     @DisplayName("Board Controller 기본 테스트")
     public void board() throws Exception {
@@ -57,6 +62,17 @@ class BoardControllerTest implements createBoardEntityListForTest {
     	List<BoardEntity> expectList = createBoardListFroTest();
     	
     	List<BoardEntity> actualList = boardService.selectBoardList();
+		
+		assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_ORDER);
+    }
+    
+    @Test
+    @DisplayName("BoardRepository 기본 테스트")
+    public void test_BoardRepository_basic() throws Exception {
+    	
+    	List<BoardEntity> expectList = createBoardListFroTest();
+    	
+    	List<BoardEntity> actualList = boardRepository.findAllByOrderByIdDesc();
 		
 		assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_ORDER);
     }

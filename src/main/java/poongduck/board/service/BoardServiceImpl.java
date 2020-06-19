@@ -13,7 +13,7 @@ public class BoardServiceImpl implements BoardService{
     	BoardEntity be = new BoardEntity();
 		be.setId(1);
 		be.setUser_id("sunlike0301");
-		be.setContents("내 목숨을 호드에");
+		be.setContents("내 목숨을 아이어에");
 		List<BoardEntity> list = new ArrayList<BoardEntity>();
 		list.add(be);
 		

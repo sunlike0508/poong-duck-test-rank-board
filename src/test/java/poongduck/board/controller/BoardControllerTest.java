@@ -87,8 +87,14 @@ class BoardControllerTest{
 		be.setUser_id("sunlike0301");
 		be.setContents("내 목숨을 아이어에");
 		
+		BoardEntity be2 = new BoardEntity();
+		be.setId(2);
+		be.setUser_id("sunlike0302");
+		be.setContents("내 목숨을 호드에");
+		
 		List<BoardEntity> list = new ArrayList<BoardEntity>();
 		list.add(be);
+		list.add(be2);
 		return list;
 	}
 

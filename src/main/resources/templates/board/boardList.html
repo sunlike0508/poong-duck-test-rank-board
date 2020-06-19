@@ -1,0 +1,44 @@
+<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>게시판</title>
+	<meta charset="utf-8">
+	<link type="text/css" href="/css/common.css" rel="stylesheet">
+	<link type="text/css" href="/css/common.partial.css" rel="stylesheet">
+	<link type="text/css" href="/css/container.article.css" rel="stylesheet">
+	<link type="text/css" href="/css/container.community.css" rel="stylesheet">
+	<link type="text/css" href="/css/container.modal.css" rel="stylesheet">
+</head>
+<body style="">
+	<div id="container" class="article">
+		<input type="hidden" id="isUser" value="1">
+		<div class="wrap articles">
+			<form class="write">
+				<p>
+					<textarea name="text" placeholder="글 내용을 입력하세요."></textarea>
+				</p>
+				<p class="input"> ID
+					<input type="text" name="userid" maxlength="20" class="text" placeholder="아이디">
+				</p>
+				<input type="submit" value="등록" class="text">
+			</form>
+			
+			<article>
+				<a class="article" href="/429848/v/127359941"><img
+					src="https://cf-fpi.everytime.kr/0.png" class="picture medium">
+					<h3 class="medium">익명</h3> <time class="medium">06/17 14:57</time>
+					<hr>
+					<p class="medium">내 목숨을 아이어에
+					</p>
+					<ul class="status">
+						<li title="댓글" class="comment">5</li>
+					</ul>
+					<hr> 
+					<input type="hidden" name="127359941_comment_anonym" value="0">
+				</a>
+			</article>
+			<div class="clearBothOnly"></div>
+		</div>
+	</div>
+</body>
+</html>

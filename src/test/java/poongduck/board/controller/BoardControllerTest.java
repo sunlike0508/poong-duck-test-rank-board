@@ -58,7 +58,7 @@ class BoardControllerTest{
     	assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_DATES);
     }
     
-	public List<BoardEntity> createBoardListFroTest() {
+	public List<BoardEntity> createMockBoardList() {
 		BoardEntity boardEntity_One = new BoardEntity();
 		boardEntity_One.setId(1);
 		boardEntity_One.setUser_id("sunlike0301");

@@ -43,8 +43,10 @@ class BoardControllerTest{
 	@Test
 	@DisplayName("Board Controller 기본 테스트")
 	public void board() throws Exception {
+		//Given
     	List<BoardEntity> expectList = createBoardListFroTest();
     	
+    	//Expected
     	MvcResult result =mockMvc.perform(get("/board"))
     			.andExpect(status().isOk())
     			.andExpect(view().name("/board/list"))
@@ -55,28 +57,6 @@ class BoardControllerTest{
     	Object actualList = result.getModelAndView().getModel().get("list");
 
     	assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_DATES);
-    }
-
-	@Test
-	@DisplayName("Board Service 메소드 기본 테스트")
-	public void test_boardService_basic() throws Exception {
-    	
-		List<BoardEntity> expectList = createBoardListFroTest();
-    	
-		List<BoardEntity> actualList = boardService.selectBoardList();
-		
-		assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_DATES);
-    }
-    
-	@Test
-	@DisplayName("BoardRepository 기본 테스트")
-	public void test_BoardRepository_basic() throws Exception {
-    	
-		List<BoardEntity> expectList = createBoardListFroTest();
-    	
-		List<BoardEntity> actualList = boardRepository.findAllByOrderByIdDesc();
-		
-		assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_DATES);
     }
     
 	public List<BoardEntity> createBoardListFroTest() {
@@ -93,6 +73,7 @@ class BoardControllerTest{
 		List<BoardEntity> list = new ArrayList<BoardEntity>();
 		list.add(boardEntity_Two);
 		list.add(boardEntity_One);
+		
 		return list;
 	}
 

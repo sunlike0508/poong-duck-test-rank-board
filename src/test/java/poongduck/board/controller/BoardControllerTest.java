@@ -41,12 +41,12 @@ class BoardControllerTest{
 	BoardRepository boardRepository;
 	
 	@Test
-	@DisplayName("Board Controller 기본 테스트")
-	public void board() throws Exception {
-		//Given
+	@DisplayName("openBoardList 메소드 테스트")
+	public void test_openBoardList() throws Exception {
+		//should
     	List<BoardEntity> expectList = createBoardListFroTest();
     	
-    	//Expected
+    	//when
     	MvcResult result =mockMvc.perform(get("/board"))
     			.andExpect(status().isOk())
     			.andExpect(view().name("/board/list"))

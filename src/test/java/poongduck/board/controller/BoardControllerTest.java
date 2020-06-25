@@ -82,19 +82,19 @@ class BoardControllerTest{
     }
     
 	public List<BoardEntity> createBoardListFroTest() {
-		BoardEntity be = new BoardEntity();
-		be.setId(1);
-		be.setUser_id("sunlike0301");
-		be.setContents("내 목숨을 아이어에");
+		BoardEntity boardEntity_One = new BoardEntity();
+		boardEntity_One.setId(1);
+		boardEntity_One.setUser_id("sunlike0301");
+		boardEntity_One.setContents("내 목숨을 아이어에");
 		
-		BoardEntity be2 = new BoardEntity();
-		be.setId(2);
-		be.setUser_id("sunlike0302");
-		be.setContents("내 목숨을 호드에");
+		BoardEntity boardEntity_Two = new BoardEntity();
+		boardEntity_Two.setId(2);
+		boardEntity_Two.setUser_id("sunlike0302");
+		boardEntity_Two.setContents("내 목숨을 호드에");
 		
 		List<BoardEntity> list = new ArrayList<BoardEntity>();
-		list.add(be);
-		list.add(be2);
+		list.add(boardEntity_One);
+		list.add(boardEntity_Two);
 		return list;
 	}
 

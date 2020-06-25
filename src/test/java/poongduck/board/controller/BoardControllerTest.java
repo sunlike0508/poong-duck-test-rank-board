@@ -32,7 +32,7 @@ import static org.unitils.reflectionassert.ReflectionAssert.*;
 class BoardControllerTest{
 
 	@Autowired
-    MockMvc mockMvc;
+	MockMvc mockMvc;
 	
 	@Autowired
 	BoardService boardService;
@@ -40,43 +40,41 @@ class BoardControllerTest{
 	@Autowired
 	BoardRepository boardRepository;
 	
-	//@Disabled
-    @Test
-    @DisplayName("Board Controller 기본 테스트")
-    public void board() throws Exception {
+	@Test
+	@DisplayName("Board Controller 기본 테스트")
+	public void board() throws Exception {
     	List<BoardEntity> expectList = createBoardListFroTest();
     	
     	MvcResult result =mockMvc.perform(get("/board"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("/board/list"))
-                .andExpect(model().attributeExists("list"))
-                .andDo(print())
-                .andReturn();
+    			.andExpect(status().isOk())
+    			.andExpect(view().name("/board/list"))
+    			.andExpect(model().attributeExists("list"))
+    			.andDo(print())
+    			.andReturn();
         
     	Object actualList = result.getModelAndView().getModel().get("list");
-         
-        assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_DATES);
+
+    	assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_DATES);
     }
-    
-    //@Disabled
-    @Test
-    @DisplayName("Board Service 메소드 기본 테스트")
-    public void test_boardService_basic() throws Exception {
+
+	@Test
+	@DisplayName("Board Service 메소드 기본 테스트")
+	public void test_boardService_basic() throws Exception {
     	
-    	List<BoardEntity> expectList = createBoardListFroTest();
+		List<BoardEntity> expectList = createBoardListFroTest();
     	
-    	List<BoardEntity> actualList = boardService.selectBoardList();
+		List<BoardEntity> actualList = boardService.selectBoardList();
 		
 		assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_DATES);
     }
     
-    @Test
-    @DisplayName("BoardRepository 기본 테스트")
-    public void test_BoardRepository_basic() throws Exception {
+	@Test
+	@DisplayName("BoardRepository 기본 테스트")
+	public void test_BoardRepository_basic() throws Exception {
     	
-    	List<BoardEntity> expectList = createBoardListFroTest();
+		List<BoardEntity> expectList = createBoardListFroTest();
     	
-    	List<BoardEntity> actualList = boardRepository.findAllByOrderByIdDesc();
+		List<BoardEntity> actualList = boardRepository.findAllByOrderByIdDesc();
 		
 		assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_DATES);
     }

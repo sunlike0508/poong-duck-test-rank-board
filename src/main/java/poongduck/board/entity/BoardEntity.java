@@ -1,6 +1,7 @@
 package poongduck.board.entity;
 
-import java.time.LocalDateTime;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import poongduk.common.constant.Constant;
 
 @Entity
 @Table(name="board")
@@ -30,11 +32,12 @@ public class BoardEntity {
 	private String contents;
 	
 	@Column(nullable=false)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-	//private LocalDateTime create_at = LocalDateTime.now();
-	private LocalDateTime create_at;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, 
+				pattern = Constant.DATE_PATTERN, timezone = Constant.DATE_TIMEZONE)
+	private Date create_at = new Date(System.currentTimeMillis());
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-	private LocalDateTime update_at;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, 
+				pattern = Constant.DATE_PATTERN, timezone = Constant.DATE_TIMEZONE)
+	private Date update_at;
 
 }

@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class BoardEntity {
     
-    @Id
+	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
 

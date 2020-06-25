@@ -48,7 +48,7 @@ class BoardControllerTest{
     	
     	MvcResult result =mockMvc.perform(get("/board"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("/board/boardList"))
+                .andExpect(view().name("/board/list"))
                 .andExpect(model().attributeExists("list"))
                 .andDo(print())
                 .andReturn();

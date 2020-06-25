@@ -55,7 +55,7 @@ class BoardControllerTest{
         
     	Object actualList = result.getModelAndView().getModel().get("list");
          
-        assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.IGNORE_DEFAULTS);
+        assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_DATES);
     }
     
     //@Disabled
@@ -67,7 +67,7 @@ class BoardControllerTest{
     	
     	List<BoardEntity> actualList = boardService.selectBoardList();
 		
-		assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.IGNORE_DEFAULTS);
+		assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_DATES);
     }
     
     @Test
@@ -78,7 +78,7 @@ class BoardControllerTest{
     	
     	List<BoardEntity> actualList = boardRepository.findAllByOrderByIdDesc();
 		
-		assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.IGNORE_DEFAULTS);
+		assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_DATES);
     }
     
 	public List<BoardEntity> createBoardListFroTest() {
@@ -93,8 +93,8 @@ class BoardControllerTest{
 		boardEntity_Two.setContents("내 목숨을 호드에");
 		
 		List<BoardEntity> list = new ArrayList<BoardEntity>();
-		list.add(boardEntity_One);
 		list.add(boardEntity_Two);
+		list.add(boardEntity_One);
 		return list;
 	}
 

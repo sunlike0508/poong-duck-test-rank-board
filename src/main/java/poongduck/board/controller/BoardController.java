@@ -22,8 +22,8 @@ public class BoardController {
 	public ModelAndView openBoardList(ModelMap model) throws Exception{
 		ModelAndView mv = new ModelAndView("/board/list");
 
-		List<BoardEntity> list = boardService.selectBoardList();
-		mv.addObject("list", list);
+		List<BoardEntity> boardList = boardService.selectBoardList();
+		mv.addObject("boardList", boardList);
 		
 		return mv;
 	}

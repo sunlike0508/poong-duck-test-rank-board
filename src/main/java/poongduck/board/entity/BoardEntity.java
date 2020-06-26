@@ -13,13 +13,15 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import poongduk.common.constant.Constant;
 
 @Entity
 @Table(name="board")
 @NoArgsConstructor
 @Data
 public class BoardEntity {
+	
+	private static final String DATE_PATTERN = "yyyy-MM-dd";
+	private static final String DATE_TIMEZONE = "Asia/Seoul";
     
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -32,10 +34,10 @@ public class BoardEntity {
 	private String contents;
 	
 	@Column(nullable=false)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constant.DATE_PATTERN, timezone = Constant.DATE_TIMEZONE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = DATE_TIMEZONE)
 	private Date create_at = new Date(System.currentTimeMillis());
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constant.DATE_PATTERN, timezone = Constant.DATE_TIMEZONE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = DATE_TIMEZONE)
 	private Date update_at;
 
 }

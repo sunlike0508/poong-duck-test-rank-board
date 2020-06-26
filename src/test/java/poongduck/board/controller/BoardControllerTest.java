@@ -43,7 +43,7 @@ class BoardControllerTest{
 	@DisplayName("openBoardList 메소드 테스트")
 	public void test_openBoardList() throws Exception {
 		//should
-    	List<BoardEntity> expectList = createBoardListFroTest();
+    	List<BoardEntity> expectList = createMockBoardList();
     	
     	//when
     	MvcResult result =mockMvc.perform(get("/board"))

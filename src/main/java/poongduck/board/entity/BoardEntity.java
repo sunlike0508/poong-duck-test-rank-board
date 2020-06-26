@@ -32,12 +32,10 @@ public class BoardEntity {
 	private String contents;
 	
 	@Column(nullable=false)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, 
-				pattern = Constant.DATE_PATTERN, timezone = Constant.DATE_TIMEZONE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constant.DATE_PATTERN, timezone = Constant.DATE_TIMEZONE)
 	private Date create_at = new Date(System.currentTimeMillis());
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, 
-				pattern = Constant.DATE_PATTERN, timezone = Constant.DATE_TIMEZONE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constant.DATE_PATTERN, timezone = Constant.DATE_TIMEZONE)
 	private Date update_at;
 
 }

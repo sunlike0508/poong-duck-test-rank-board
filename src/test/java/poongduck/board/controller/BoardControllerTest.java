@@ -49,11 +49,11 @@ class BoardControllerTest{
     	MvcResult result =mockMvc.perform(get("/board"))
     			.andExpect(status().isOk())
     			.andExpect(view().name("/board/list"))
-    			.andExpect(model().attributeExists("list"))
+    			.andExpect(model().attributeExists("boardList"))
     			.andDo(print())
     			.andReturn();
         
-    	Object actualList = result.getModelAndView().getModel().get("list");
+    	Object actualList = result.getModelAndView().getModel().get("boardList");
 
     	assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_DATES);
     }

@@ -42,18 +42,20 @@ class BoardControllerTest{
 	@Test
 	@DisplayName("openBoardList 메소드 테스트")
 	public void test_openBoardList() throws Exception {
-		//should
-    	List<BoardEntity> expectList = createMockBoardList();
-    	
-    	//when
+		
+    	//when : openBoardList 메소드를 실행하여 list 화면에 결과 값을 출력 할때
     	MvcResult result =mockMvc.perform(get("/board"))
     			.andExpect(status().isOk())
     			.andExpect(view().name("/board/list"))
     			.andExpect(model().attributeExists("boardList"))
     			.andDo(print())
     			.andReturn();
-        
+    	
+    	//그 결과 값이 boardList라고 하자.
     	Object actualList = result.getModelAndView().getModel().get("boardList");
+    	
+    	//expected : boardList 변수 값은 다음 expectList 변수와 값이 같아야 한다.
+    	List<BoardEntity> expectList = createMockBoardList();
 
     	assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_DATES);
     }

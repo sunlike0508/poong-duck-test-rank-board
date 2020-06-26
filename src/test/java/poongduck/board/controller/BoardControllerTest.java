@@ -69,11 +69,11 @@ class BoardControllerTest{
 		boardEntity_Two.setUser_id("sunlike0302");
 		boardEntity_Two.setContents("내 목숨을 호드에");
 		
-		List<BoardEntity> list = new ArrayList<BoardEntity>();
-		list.add(boardEntity_Two);
-		list.add(boardEntity_One);
+		List<BoardEntity> expectedBoardList = new ArrayList<BoardEntity>();
+		expectedBoardList.add(boardEntity_Two);
+		expectedBoardList.add(boardEntity_One);
 		
-		return list;
+		return expectedBoardList;
 	}
 
 }

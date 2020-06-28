@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +31,7 @@ import static org.unitils.reflectionassert.ReflectionAssert.*;
 class BoardControllerTest{
 
 	@Autowired
-    MockMvc mockMvc;
+	MockMvc mockMvc;
 	
 	@Autowired
 	BoardService boardService;
@@ -40,62 +39,43 @@ class BoardControllerTest{
 	@Autowired
 	BoardRepository boardRepository;
 	
-	//@Disabled
-    @Test
-    @DisplayName("Board Controller 기본 테스트")
-    public void board() throws Exception {
-    	List<BoardEntity> expectList = createBoardListFroTest();
-    	
+	@Test
+	@DisplayName("openBoardList 메소드 테스트")
+	public void test_openBoardList() throws Exception {
+		
+    	//when : openBoardList 메소드를 실행하여 list 화면에 결과 값을 출력 할때
     	MvcResult result =mockMvc.perform(get("/board"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("/board/boardList"))
-                .andExpect(model().attributeExists("list"))
-                .andDo(print())
-                .andReturn();
-        
-    	Object actualList = result.getModelAndView().getModel().get("list");
-         
-        assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.IGNORE_DEFAULTS);
+    			.andExpect(status().isOk())
+    			.andExpect(view().name("/board/list"))
+    			.andExpect(model().attributeExists("boardList"))
+    			.andDo(print())
+    			.andReturn();
+    	
+    	//그 결과 값이 boardList라고 하자.
+    	Object actualList = result.getModelAndView().getModel().get("boardList");
+    	
+    	//expected : boardList 변수 값은 다음 expectList 변수와 값이 같아야 한다.
+    	List<BoardEntity> expectList = createMockBoardList();
+
+    	assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_DATES);
     }
     
-    //@Disabled
-    @Test
-    @DisplayName("Board Service 메소드 기본 테스트")
-    public void test_boardService_basic() throws Exception {
-    	
-    	List<BoardEntity> expectList = createBoardListFroTest();
-    	
-    	List<BoardEntity> actualList = boardService.selectBoardList();
+	public List<BoardEntity> createMockBoardList() {
+		BoardEntity boardEntity_One = new BoardEntity();
+		boardEntity_One.setId(1);
+		boardEntity_One.setUser_id("sunlike0301");
+		boardEntity_One.setContents("내 목숨을 아이어에");
 		
-		assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.IGNORE_DEFAULTS);
-    }
-    
-    @Test
-    @DisplayName("BoardRepository 기본 테스트")
-    public void test_BoardRepository_basic() throws Exception {
-    	
-    	List<BoardEntity> expectList = createBoardListFroTest();
-    	
-    	List<BoardEntity> actualList = boardRepository.findAllByOrderByIdDesc();
+		BoardEntity boardEntity_Two = new BoardEntity();
+		boardEntity_Two.setId(2);
+		boardEntity_Two.setUser_id("sunlike0302");
+		boardEntity_Two.setContents("내 목숨을 호드에");
 		
-		assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.IGNORE_DEFAULTS);
-    }
-    
-	public List<BoardEntity> createBoardListFroTest() {
-		BoardEntity be = new BoardEntity();
-		be.setId(1);
-		be.setUser_id("sunlike0301");
-		be.setContents("내 목숨을 아이어에");
+		List<BoardEntity> expectedBoardList = new ArrayList<BoardEntity>();
+		expectedBoardList.add(boardEntity_Two);
+		expectedBoardList.add(boardEntity_One);
 		
-		BoardEntity be2 = new BoardEntity();
-		be.setId(2);
-		be.setUser_id("sunlike0302");
-		be.setContents("내 목숨을 호드에");
-		
-		List<BoardEntity> list = new ArrayList<BoardEntity>();
-		list.add(be);
-		list.add(be2);
-		return list;
+		return expectedBoardList;
 	}
 
 }

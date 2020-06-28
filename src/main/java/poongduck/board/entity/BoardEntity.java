@@ -1,6 +1,7 @@
 package poongduck.board.entity;
 
-import java.time.LocalDateTime;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,8 +19,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class BoardEntity {
+	
+	private static final String DATE_PATTERN = "yyyy-MM-dd";
+	private static final String DATE_TIMEZONE = "Asia/Seoul";
     
-    @Id
+	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
 
@@ -30,11 +34,10 @@ public class BoardEntity {
 	private String contents;
 	
 	@Column(nullable=false)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-	//private LocalDateTime create_at = LocalDateTime.now();
-	private LocalDateTime create_at;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = DATE_TIMEZONE)
+	private Date create_at = new Date(System.currentTimeMillis());
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-	private LocalDateTime update_at;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = DATE_TIMEZONE)
+	private Date update_at;
 
 }

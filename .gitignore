@@ -5,6 +5,7 @@ bin/
 gradle/
 gradlew
 gradlew.bat
+*.properties
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**
 !**/src/test/**

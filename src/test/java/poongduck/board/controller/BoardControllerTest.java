@@ -14,8 +14,11 @@ import java.io.InputStream;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+
+import javax.persistence.GenerationType;
 
 import org.dbunit.Assertion;
 import org.dbunit.DatabaseUnitException;
@@ -23,6 +26,7 @@ import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
+import org.dbunit.dataset.ReplacementDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.ext.mysql.MySqlConnection;
 import org.dbunit.operation.DatabaseOperation;
@@ -70,7 +74,9 @@ class BoardControllerTest {
 		iDatabaseConnection = new MySqlConnection(DriverManager.getConnection(url, username, passward), schema);
 		iDatabaseConnection.getConfig().setProperty(DatabaseConfig.FEATURE_QUALIFIED_TABLE_NAMES, false);
 		
-		IDataSet dataSet = new FlatXmlDataSetBuilder().build(new File("Board.xml"));
+		ReplacementDataSet dataSet = new ReplacementDataSet(new FlatXmlDataSetBuilder().build(new File("Board.xml")));
+		dataSet.addReplacementObject("[null]", null);
+		dataSet.addReplacementObject("[date]", new Date(System.currentTimeMillis()));
 		
 		DatabaseOperation.CLEAN_INSERT.execute(iDatabaseConnection, dataSet);
     }
@@ -84,8 +90,14 @@ class BoardControllerTest {
 
 	@Test
 	public void testIDatabaseTester() throws Exception {
+
 		ITable actualTable = iDatabaseConnection.createDataSet().getTable("board");
-		ITable expectedTable = new FlatXmlDataSetBuilder().build(new File("Expected_Board.xml")).getTable("board");
+		
+		ReplacementDataSet dataSet = new ReplacementDataSet(new FlatXmlDataSetBuilder().build(new File("Expected_Board.xml")));
+		dataSet.addReplacementObject("[null]", null);
+		dataSet.addReplacementObject("[date]", new Date(System.currentTimeMillis()));
+		
+		ITable expectedTable = dataSet.getTable("board");
 		
 		String[] ignoreCols = {"create_at", "update_at"};
 		Assertion.assertEqualsIgnoreCols(expectedTable, actualTable, ignoreCols);

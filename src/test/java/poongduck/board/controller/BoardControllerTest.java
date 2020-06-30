@@ -31,7 +31,6 @@ import org.dbunit.ext.mysql.MySqlConnection;
 import org.dbunit.operation.DatabaseOperation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +44,7 @@ import org.unitils.reflectionassert.ReflectionComparatorMode;
 
 import poongduck.board.entity.BoardEntity;
 
-import static org.unitils.reflectionassert.ReflectionAssert.*;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -105,7 +104,7 @@ class BoardControllerTest {
 		
 		return dataSet;
 	}
-	@Disabled
+	
 	@Test
 	@DisplayName("게시글 리스트 출력 메소드 테스트")
 	public void testOpenBoardList() throws Exception {
@@ -122,7 +121,17 @@ class BoardControllerTest {
     	Object actualList = result.getModelAndView().getModel().get(BoardController.BOARD_LIST_ATTRIBUTE);
     	
     	//expected : boardList 변수 값은 다음 expectList 변수와 값이 같아야 한다.
-    	List<BoardEntity> expectList = createMockBoardList();
+    	ITable expectedTable = setRepalcementDataSet("Expected_Board_List.xml").getTable("board");
+    	List<BoardEntity> expectList = new ArrayList<BoardEntity>();
+    	
+    	for(int i = 0; i < expectedTable.getRowCount(); i++) {
+    		BoardEntity boardEntity = new BoardEntity();
+    		int id = Integer.parseInt(expectedTable.getValue(i, "id").toString());
+    		boardEntity.setId(id);
+    		boardEntity.setContents(expectedTable.getValue(i, "contents").toString());
+    		boardEntity.setUser_id(expectedTable.getValue(i, "user_id").toString());
+    		expectList.add(boardEntity);
+    	}
 
     	assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_DATES);
     }
@@ -139,23 +148,4 @@ class BoardControllerTest {
     			.andExpect(view().name(BoardController.BOARD_LIST_REDIRECT_URL))
     			.andDo(print());
     }
-    
-	public List<BoardEntity> createMockBoardList() {
-		BoardEntity boardEntity_One = new BoardEntity();
-		boardEntity_One.setId(1);
-		boardEntity_One.setUser_id("sunlike0301");
-		boardEntity_One.setContents("내 목숨을 아이어에");
-		
-		BoardEntity boardEntity_Two = new BoardEntity();
-		boardEntity_Two.setId(2);
-		boardEntity_Two.setUser_id("sunlike0302");
-		boardEntity_Two.setContents("내 목숨을 호드에");
-		
-		List<BoardEntity> expectedBoardList = new ArrayList<BoardEntity>();
-		expectedBoardList.add(boardEntity_Two);
-		expectedBoardList.add(boardEntity_One);
-		
-		return expectedBoardList;
-	}
-
 }

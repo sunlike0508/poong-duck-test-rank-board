@@ -23,6 +23,7 @@ repositories {
 
 dependencies {
 	testCompile group: 'org.unitils', name: 'unitils-test', version: '3.4.6'
+	testCompile group: 'org.dbunit', name: 'dbunit', version: '2.7.0'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'

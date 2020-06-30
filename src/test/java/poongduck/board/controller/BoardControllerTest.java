@@ -1,13 +1,34 @@
 package poongduck.board.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+
+import org.dbunit.Assertion;
+import org.dbunit.DatabaseUnitException;
+import org.dbunit.database.DatabaseConfig;
+import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.ITable;
+import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
+import org.dbunit.ext.mysql.MySqlConnection;
+import org.dbunit.operation.DatabaseOperation;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -20,44 +41,49 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
 
 import poongduck.board.entity.BoardEntity;
-import poongduck.board.repository.BoardRepository;
-import poongduck.board.service.BoardService;
 
 import static org.unitils.reflectionassert.ReflectionAssert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
-class BoardControllerTest{
+class BoardControllerTest {
 
 	@Autowired
 	MockMvc mockMvc;
 	
-	@Autowired
-	BoardService boardService;
-	
-	@Autowired
-	BoardRepository boardRepository;
-	
 	@Test
-	@DisplayName("openBoardList 메소드 테스트")
-	public void test_openBoardList() throws Exception {
+	@DisplayName("게시글 리스트 출력 메소드 테스트")
+	public void testOpenBoardList() throws Exception {
 		
     	//when : openBoardList 메소드를 실행하여 list 화면에 결과 값을 출력 할때
-    	MvcResult result =mockMvc.perform(get("/board"))
+    	MvcResult result = mockMvc.perform(get(BoardController.BOARD_LIST_URL))
     			.andExpect(status().isOk())
-    			.andExpect(view().name("/board/list"))
-    			.andExpect(model().attributeExists("boardList"))
+    			.andExpect(view().name(BoardController.BOARD_LIST_VIEW))
+    			.andExpect(model().attributeExists(BoardController.BOARD_LIST_ATTRIBUTE))
     			.andDo(print())
     			.andReturn();
     	
     	//그 결과 값이 boardList라고 하자.
-    	Object actualList = result.getModelAndView().getModel().get("boardList");
+    	Object actualList = result.getModelAndView().getModel().get(BoardController.BOARD_LIST_ATTRIBUTE);
     	
     	//expected : boardList 변수 값은 다음 expectList 변수와 값이 같아야 한다.
     	List<BoardEntity> expectList = createMockBoardList();
 
     	assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_DATES);
+    }
+	
+	@Test
+	@DisplayName("게시글 작성 메소드 테스트")
+	public void testWriteBoard() throws Exception {
+		
+		mockMvc.perform(post(BoardController.BOARD_WRITE_URL)
+    			.param("user_id", "sunlike0303")
+    			.param("contents", "호드를 위하여"))
+    			.andExpect(redirectedUrl(BoardController.BOARD_LIST_URL))
+    			.andExpect(status().is3xxRedirection())
+    			.andExpect(view().name(BoardController.BOARD_LIST_REDIRECT_URL))
+    			.andDo(print());
     }
     
 	public List<BoardEntity> createMockBoardList() {

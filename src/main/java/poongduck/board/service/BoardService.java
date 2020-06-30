@@ -9,4 +9,6 @@ public interface BoardService {
 
 	List<BoardEntity> selectBoardList();
 
+	void saveBoard(BoardEntity board);
+
 }

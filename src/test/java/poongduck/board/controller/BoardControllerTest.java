@@ -86,25 +86,15 @@ class BoardControllerTest {
 
 	@Test
 	public void testIDatabaseTester() throws Exception {
-
+		//when
 		ITable actualTable = iDatabaseConnection.createDataSet().getTable("board");
-		
+		//expected
 		ITable expectedTable = setRepalcementDataSet("Expected_Board.xml").getTable("board");
-		
+		//except comparison column
 		String[] ignoreCols = {"create_at", "update_at"};
 		Assertion.assertEqualsIgnoreCols(expectedTable, actualTable, ignoreCols);
 	}
 
-	public ReplacementDataSet setRepalcementDataSet(String fileName) throws MalformedURLException, DataSetException {
-		
-		ReplacementDataSet dataSet = new ReplacementDataSet(new FlatXmlDataSetBuilder().build(new File(fileName)));
-		
-		dataSet.addReplacementObject("[null]", null);
-		dataSet.addReplacementObject("[date]", new Date(System.currentTimeMillis()));
-		
-		return dataSet;
-	}
-	
 	@Test
 	@DisplayName("게시글 리스트 출력 메소드 테스트")
 	public void testOpenBoardList() throws Exception {
@@ -121,21 +111,11 @@ class BoardControllerTest {
     	Object actualList = result.getModelAndView().getModel().get(BoardController.BOARD_LIST_ATTRIBUTE);
     	
     	//expected : boardList 변수 값은 다음 expectList 변수와 값이 같아야 한다.
-    	ITable expectedTable = setRepalcementDataSet("Expected_Board_List.xml").getTable("board");
-    	List<BoardEntity> expectList = new ArrayList<BoardEntity>();
-    	
-    	for(int i = 0; i < expectedTable.getRowCount(); i++) {
-    		BoardEntity boardEntity = new BoardEntity();
-    		int id = Integer.parseInt(expectedTable.getValue(i, "id").toString());
-    		boardEntity.setId(id);
-    		boardEntity.setContents(expectedTable.getValue(i, "contents").toString());
-    		boardEntity.setUser_id(expectedTable.getValue(i, "user_id").toString());
-    		expectList.add(boardEntity);
-    	}
+    	List<BoardEntity> expectedList = expectedBoardList();
 
-    	assertReflectionEquals(expectList, actualList, ReflectionComparatorMode.LENIENT_DATES);
+    	assertReflectionEquals(expectedList, actualList, ReflectionComparatorMode.LENIENT_DATES);
     }
-	
+
 	@Test
 	@DisplayName("게시글 작성 메소드 테스트")
 	public void testWriteBoard() throws Exception {
@@ -148,4 +128,30 @@ class BoardControllerTest {
     			.andExpect(view().name(BoardController.BOARD_LIST_REDIRECT_URL))
     			.andDo(print());
     }
+	
+	public ReplacementDataSet setRepalcementDataSet(String fileName) throws MalformedURLException, DataSetException {
+		
+		ReplacementDataSet dataSet = new ReplacementDataSet(new FlatXmlDataSetBuilder().build(new File(fileName)));
+		
+		dataSet.addReplacementObject("[null]", null);
+		dataSet.addReplacementObject("[date]", new Date(System.currentTimeMillis()));
+		
+		return dataSet;
+	}
+	
+	public List<BoardEntity> expectedBoardList() throws DataSetException, MalformedURLException {
+		
+		List<BoardEntity> expectList = new ArrayList<BoardEntity>();
+    	ITable expectedTable = setRepalcementDataSet("Expected_Board_List.xml").getTable("board");
+    	
+    	for(int i = 0; i < expectedTable.getRowCount(); i++) {
+    		BoardEntity boardEntity = new BoardEntity();
+    		boardEntity.setId(Integer.parseInt(expectedTable.getValue(i, "id").toString()));
+    		boardEntity.setContents(expectedTable.getValue(i, "contents").toString());
+    		boardEntity.setUser_id(expectedTable.getValue(i, "user_id").toString());
+    		expectList.add(boardEntity);
+    	}
+    	
+		return expectList;
+	}
 }

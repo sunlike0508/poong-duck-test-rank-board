@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,13 +19,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-import javax.persistence.GenerationType;
-
 import org.dbunit.Assertion;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.IDatabaseConnection;
-import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.ReplacementDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
@@ -74,9 +73,7 @@ class BoardControllerTest {
 		iDatabaseConnection = new MySqlConnection(DriverManager.getConnection(url, username, passward), schema);
 		iDatabaseConnection.getConfig().setProperty(DatabaseConfig.FEATURE_QUALIFIED_TABLE_NAMES, false);
 		
-		ReplacementDataSet dataSet = new ReplacementDataSet(new FlatXmlDataSetBuilder().build(new File("Board.xml")));
-		dataSet.addReplacementObject("[null]", null);
-		dataSet.addReplacementObject("[date]", new Date(System.currentTimeMillis()));
+		ReplacementDataSet dataSet = setRepalcementDataSet("Board.xml");
 		
 		DatabaseOperation.CLEAN_INSERT.execute(iDatabaseConnection, dataSet);
     }
@@ -93,14 +90,20 @@ class BoardControllerTest {
 
 		ITable actualTable = iDatabaseConnection.createDataSet().getTable("board");
 		
-		ReplacementDataSet dataSet = new ReplacementDataSet(new FlatXmlDataSetBuilder().build(new File("Expected_Board.xml")));
-		dataSet.addReplacementObject("[null]", null);
-		dataSet.addReplacementObject("[date]", new Date(System.currentTimeMillis()));
-		
-		ITable expectedTable = dataSet.getTable("board");
+		ITable expectedTable = setRepalcementDataSet("Expected_Board.xml").getTable("board");
 		
 		String[] ignoreCols = {"create_at", "update_at"};
 		Assertion.assertEqualsIgnoreCols(expectedTable, actualTable, ignoreCols);
+	}
+
+	public ReplacementDataSet setRepalcementDataSet(String fileName) throws MalformedURLException, DataSetException {
+		
+		ReplacementDataSet dataSet = new ReplacementDataSet(new FlatXmlDataSetBuilder().build(new File(fileName)));
+		
+		dataSet.addReplacementObject("[null]", null);
+		dataSet.addReplacementObject("[date]", new Date(System.currentTimeMillis()));
+		
+		return dataSet;
 	}
 	@Disabled
 	@Test

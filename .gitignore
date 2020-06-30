@@ -8,7 +8,9 @@ gradlew.bat
 src/main/resouces/application.properties
 *.properties
 !gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**
+!**/src/main/java**
+!**/src/main/resoucre/templates**
+!**/src/main/resoucre/static**
 !**/src/test/**
 
 ### STS ###

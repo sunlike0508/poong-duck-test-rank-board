@@ -50,6 +50,19 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 class BoardControllerTest {
+	
+	private static final String PROPERTIES = "application.properties";
+	private static final String DRIVER = "spring.datasource.driver-class-name";
+	private static final String URL = "spring.datasource.url";
+	private static final String USERNAME = "spring.datasource.username";
+	private static final String PASSWARD = "spring.datasource.password";
+	private static final String SCHEMA = "spring.datasource.hikari.schema";
+	
+	private static final String TABLE_BOARD = "board";
+	
+	private static final String ID = "id";
+	private static final String USER_ID = "user_id";
+	private static final String CONTENTS = "contents";
 
 	@Autowired
 	MockMvc mockMvc;
@@ -58,18 +71,14 @@ class BoardControllerTest {
 
 	@BeforeEach
 	public void setUp() throws ClassNotFoundException, DatabaseUnitException, SQLException, IOException{
-		InputStream inputStream = getClass().getClassLoader().getResourceAsStream("application.properties");
+		InputStream inputStream = getClass().getClassLoader().getResourceAsStream(PROPERTIES);
 		Properties properties = new Properties();
 		properties.load(inputStream);
 		
-		final String dirver = properties.getProperty("spring.datasource.driver-class-name");
-		final String url = properties.getProperty("spring.datasource.url");
-		final String username = properties.getProperty("spring.datasource.username");
-		final String passward = properties.getProperty("spring.datasource.password");
-		final String schema = properties.getProperty("spring.datasource.hikari.schema");
-		
-		Class.forName(dirver);
-		iDatabaseConnection = new MySqlConnection(DriverManager.getConnection(url, username, passward), schema);
+		Class.forName(properties.getProperty(DRIVER));
+		iDatabaseConnection = new MySqlConnection(
+				DriverManager.getConnection(properties.getProperty(URL), properties.getProperty(USERNAME), properties.getProperty(PASSWARD)),
+				properties.getProperty(SCHEMA));
 		iDatabaseConnection.getConfig().setProperty(DatabaseConfig.FEATURE_QUALIFIED_TABLE_NAMES, false);
 		
 		ReplacementDataSet dataSet = setRepalcementDataSet("Board.xml");
@@ -87,9 +96,9 @@ class BoardControllerTest {
 	@Test
 	public void testIDatabaseTester() throws Exception {
 		//when
-		ITable actualTable = iDatabaseConnection.createDataSet().getTable("board");
+		ITable actualTable = iDatabaseConnection.createDataSet().getTable(TABLE_BOARD);
 		//expected
-		ITable expectedTable = setRepalcementDataSet("Expected_Board.xml").getTable("board");
+		ITable expectedTable = setRepalcementDataSet("Expected_Board.xml").getTable(TABLE_BOARD);
 		//except comparison column
 		String[] ignoreCols = {"create_at", "update_at"};
 		Assertion.assertEqualsIgnoreCols(expectedTable, actualTable, ignoreCols);
@@ -111,9 +120,7 @@ class BoardControllerTest {
     	Object actualList = result.getModelAndView().getModel().get(BoardController.BOARD_LIST_ATTRIBUTE);
     	
     	//expected : boardList 변수 값은 다음 expectList 변수와 값이 같아야 한다.
-    	List<BoardEntity> expectedList = expectedBoardList();
-
-    	assertReflectionEquals(expectedList, actualList, ReflectionComparatorMode.LENIENT_DATES);
+    	assertReflectionEquals(expectedBoardList(), actualList, ReflectionComparatorMode.LENIENT_DATES);
     }
 
 	@Test
@@ -121,8 +128,8 @@ class BoardControllerTest {
 	public void testWriteBoard() throws Exception {
 		
 		mockMvc.perform(post(BoardController.BOARD_WRITE_URL)
-    			.param("user_id", "sunlike0303")
-    			.param("contents", "호드를 위하여"))
+    			.param(USER_ID, "sunlike0303")
+    			.param(CONTENTS, "호드를 위하여"))
     			.andExpect(redirectedUrl(BoardController.BOARD_LIST_URL))
     			.andExpect(status().is3xxRedirection())
     			.andExpect(view().name(BoardController.BOARD_LIST_REDIRECT_URL))
@@ -142,16 +149,22 @@ class BoardControllerTest {
 	public List<BoardEntity> expectedBoardList() throws DataSetException, MalformedURLException {
 		
 		List<BoardEntity> expectList = new ArrayList<BoardEntity>();
-    	ITable expectedTable = setRepalcementDataSet("Expected_Board_List.xml").getTable("board");
+    	ITable expectedTable = setRepalcementDataSet("Expected_Board_List.xml").getTable(TABLE_BOARD);
     	
-    	for(int i = 0; i < expectedTable.getRowCount(); i++) {
-    		BoardEntity boardEntity = new BoardEntity();
-    		boardEntity.setId(Integer.parseInt(expectedTable.getValue(i, "id").toString()));
-    		boardEntity.setContents(expectedTable.getValue(i, "contents").toString());
-    		boardEntity.setUser_id(expectedTable.getValue(i, "user_id").toString());
+    	for(int row = 0; row < expectedTable.getRowCount(); row++) {
+    		BoardEntity boardEntity = makeBoardEntity(expectedTable, row);
     		expectList.add(boardEntity);
     	}
     	
 		return expectList;
+	}
+
+	public BoardEntity makeBoardEntity(ITable expectedTable, int row) throws DataSetException {
+		BoardEntity boardEntity = new BoardEntity();
+		boardEntity.setId(Integer.parseInt(expectedTable.getValue(row, ID).toString()));
+		boardEntity.setContents(expectedTable.getValue(row, CONTENTS).toString());
+		boardEntity.setUser_id(expectedTable.getValue(row, USER_ID).toString());
+		
+		return boardEntity;
 	}
 }

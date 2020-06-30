@@ -51,7 +51,46 @@ class BoardControllerTest {
 
 	@Autowired
 	MockMvc mockMvc;
-	
+
+	IDatabaseConnection iDatabaseConnection;
+
+	@BeforeEach
+	public void setUp() throws ClassNotFoundException, DatabaseUnitException, SQLException, IOException{
+		InputStream inputStream = getClass().getClassLoader().getResourceAsStream("application.properties");
+		Properties properties = new Properties();
+		properties.load(inputStream);
+		
+		final String dirver = properties.getProperty("spring.datasource.driver-class-name");
+		final String url = properties.getProperty("spring.datasource.url");
+		final String username = properties.getProperty("spring.datasource.username");
+		final String passward = properties.getProperty("spring.datasource.password");
+		final String schema = properties.getProperty("spring.datasource.hikari.schema");
+		
+		Class.forName(dirver);
+		iDatabaseConnection = new MySqlConnection(DriverManager.getConnection(url, username, passward), schema);
+		iDatabaseConnection.getConfig().setProperty(DatabaseConfig.FEATURE_QUALIFIED_TABLE_NAMES, false);
+		
+		IDataSet dataSet = new FlatXmlDataSetBuilder().build(new File("Board.xml"));
+		
+		DatabaseOperation.CLEAN_INSERT.execute(iDatabaseConnection, dataSet);
+    }
+
+	@AfterEach
+	public void tearDown() throws SQLException {
+		if(!iDatabaseConnection.getConnection().isClosed()) {
+			iDatabaseConnection.close();
+		}
+	}
+
+	@Test
+	public void testIDatabaseTester() throws Exception {
+		ITable actualTable = iDatabaseConnection.createDataSet().getTable("board");
+		ITable expectedTable = new FlatXmlDataSetBuilder().build(new File("Expected_Board.xml")).getTable("board");
+		
+		String[] ignoreCols = {"create_at", "update_at"};
+		Assertion.assertEqualsIgnoreCols(expectedTable, actualTable, ignoreCols);
+	}
+	@Disabled
 	@Test
 	@DisplayName("게시글 리스트 출력 메소드 테스트")
 	public void testOpenBoardList() throws Exception {

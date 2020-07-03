@@ -16,6 +16,12 @@ public class RankController {
 	@GetMapping(value=RANK)
 	public List<RankUser> getRankList() throws Exception{
 		
-		return new ArrayList<RankUser>();
+		RankUser rankUser = new RankUser();
+		rankUser.setId("sunlike0301");
+		
+		List<RankUser> rankList = new ArrayList<RankUser>();
+		rankList.add(rankUser);
+		
+		return rankList;
 	}
 }

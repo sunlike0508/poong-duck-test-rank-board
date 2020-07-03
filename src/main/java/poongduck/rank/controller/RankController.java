@@ -17,7 +17,8 @@ public class RankController {
 	public List<RankUser> getRankList() throws Exception{
 		
 		RankUser rankUser = new RankUser();
-		rankUser.setId("sunlike0301");
+		rankUser.setId("1");
+		rankUser.setNickname("sunlike0301");
 		
 		List<RankUser> rankList = new ArrayList<RankUser>();
 		rankList.add(rankUser);

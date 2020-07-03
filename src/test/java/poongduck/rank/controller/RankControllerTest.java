@@ -75,13 +75,12 @@ class RankControllerTest {
 		mockMvc.perform(get(RankController.RANK))
 						.andExpect(status().isOk())
 						.andExpect(jsonPath("$.[0].id", is(1)))
-						.andExpect(jsonPath("$.[0].nickname", is("내 목숨을 아이어에")))
+						.andExpect(jsonPath("$.[0].nickname", is("sunlike0301")))
 						.andExpect(jsonPath("$.[0].point", is(100)))
 						.andExpect(jsonPath("$.[1].id", is(2)))
-						.andExpect(jsonPath("$.[1].nickname", is("내 목숨을 호드에")))
+						.andExpect(jsonPath("$.[1].nickname", is("sunlike0302")))
 						.andExpect(jsonPath("$.[1].point", is(50)))
-    			
-    			.andDo(print());
+						.andDo(print());
 	}
 	
 	@AfterEach

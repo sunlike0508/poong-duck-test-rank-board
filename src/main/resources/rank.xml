@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database>
+<dataset>
 	<rank_user id="1" nickname="sunlike0301" point="100" />
 	<rank_user id="2" nickname="sunlike0302" point="50" />
-</database>
+</dataset>

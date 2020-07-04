@@ -39,7 +39,7 @@ public class BoardController {
 		
 		return boardService.selectBoardList();
 	}
-	// getBoardDetail
+	// 글 상세 보기 메소드
 	@GetMapping(BOARD_DETAIL + ID)
 	public BoardEntity getBoardDetail(@PathVariable(required = true) int id) throws Exception{
 		

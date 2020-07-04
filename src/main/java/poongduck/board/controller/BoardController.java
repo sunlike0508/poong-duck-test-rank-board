@@ -31,7 +31,7 @@ public class BoardController {
 		
 		return boardService.selectBoardList();
 	}
-	// writeBoard
+	// 글쓰기 메소드
 	@PostMapping(path = BOARD_WRITE_URL, produces = JSON_UTF8)
 	public List<BoardEntity> writeBoard(@RequestBody BoardEntity board) throws Exception{
 

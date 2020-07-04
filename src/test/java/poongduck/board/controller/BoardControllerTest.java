@@ -156,6 +156,7 @@ class BoardControllerTest {
 						.andExpect(status().isOk())
 						.andExpect(jsonPath("$.id", is(1)))
 						.andExpect(jsonPath("$.user_id", is("sunlike0301")))
+						.andExpect(jsonPath("$.title", is("최강 삼성 승리하리라~")))
 						.andExpect(jsonPath("$.contents", is("내 목숨을 아이어에")))
 						.andDo(print());
     }
@@ -163,7 +164,8 @@ class BoardControllerTest {
 	public BoardEntity makeGivenBoardEntity() {
 		BoardEntity givenBoardEntity = new BoardEntity();
 		givenBoardEntity.setUser_id("sunlike0303");
-		givenBoardEntity.setContents("호드를 위하여");
+		givenBoardEntity.setTitle("LG 잡고 5위로 가즈아~");
+		givenBoardEntity.setContents("원태인 삼성의 황태자~~~!!!");
 		
 		return givenBoardEntity;
 	}

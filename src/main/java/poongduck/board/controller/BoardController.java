@@ -38,11 +38,6 @@ public class BoardController {
 	@GetMapping("/board/detail/{id}")
 	public BoardEntity getBoardDetail(@PathVariable(required = true) int id) throws Exception{
 		
-		BoardEntity board = new BoardEntity();
-		board.setId(id);
-		board.setUser_id("sunlike0301");
-		board.setContents("내 목숨을 아이어에");
-		
-		return board;
+		return boardService.selectBoardDetail(id);
 	}
 }

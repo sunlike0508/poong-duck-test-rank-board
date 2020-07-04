@@ -25,7 +25,7 @@ public class BoardController {
 	
 	@Autowired
 	private BoardService boardService;
-	// openBoardList
+	// 글 리스트 보기 메소드
 	@GetMapping(BOARD_LIST_URL)
 	public List<BoardEntity> openBoardList() throws Exception{
 		

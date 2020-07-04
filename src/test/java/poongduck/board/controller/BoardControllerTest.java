@@ -50,7 +50,7 @@ import org.junit.jupiter.api.BeforeEach;
 @AutoConfigureMockMvc
 class BoardControllerTest {
 	
-	public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), 
+	private static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), 
 																MediaType.APPLICATION_JSON.getSubtype(), 
 																Charset.forName("UTF-8"));
 
@@ -151,7 +151,7 @@ class BoardControllerTest {
 	@DisplayName("게시글 상세 내용 출력 메소드 테스트")
 	public void testGetBoardDetail() throws Exception {
 		
-		mockMvc.perform(get("/board/detail/1")
+		mockMvc.perform(get(BoardController.BOARD_DETAIL + "1")
 						.accept(APPLICATION_JSON_UTF8))
 						.andExpect(status().isOk())
 						.andExpect(jsonPath("$.id", is(1)))

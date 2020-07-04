@@ -17,6 +17,11 @@ public class BoardController {
 	
 	public static final String BOARD_LIST_URL = "/board";
 	public static final String BOARD_WRITE_URL = "/board/write";
+	public static final String BOARD_DETAIL = "/board/detail/";
+	
+	private static final String JSON_UTF8 = "application/json;charset=UTF-8";
+	
+	private static final String ID = "{id}";
 	
 	@Autowired
 	private BoardService boardService;
@@ -27,7 +32,7 @@ public class BoardController {
 		return boardService.selectBoardList();
 	}
 	
-	@PostMapping(path = BOARD_WRITE_URL, produces = "application/json;charset=UTF-8")
+	@PostMapping(path = BOARD_WRITE_URL, produces = JSON_UTF8)
 	public List<BoardEntity> writeBoard(@RequestBody BoardEntity board) throws Exception{
 
 		boardService.saveBoard(board);
@@ -35,7 +40,7 @@ public class BoardController {
 		return boardService.selectBoardList();
 	}
 	
-	@GetMapping("/board/detail/{id}")
+	@GetMapping(BOARD_DETAIL + ID)
 	public BoardEntity getBoardDetail(@PathVariable(required = true) int id) throws Exception{
 		
 		return boardService.selectBoardDetail(id);

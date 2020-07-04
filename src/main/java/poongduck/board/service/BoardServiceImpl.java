@@ -20,9 +20,13 @@ public class BoardServiceImpl implements BoardService{
 		return boardRepository.findAllByOrderByIdDesc();
 	}
 
-
 	@Override
 	public void saveBoard(BoardEntity board) {
 		boardRepository.save(board);
+	}
+
+	@Override
+	public BoardEntity selectBoardDetail(int id) {
+		return boardRepository.findById(id).get();
 	}
 }

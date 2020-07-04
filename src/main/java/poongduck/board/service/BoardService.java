@@ -11,4 +11,6 @@ public interface BoardService {
 
 	void saveBoard(BoardEntity board);
 
+	BoardEntity selectBoardDetail(int id);
+
 }

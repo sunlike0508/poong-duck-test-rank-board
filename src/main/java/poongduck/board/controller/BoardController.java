@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,5 +33,16 @@ public class BoardController {
 		boardService.saveBoard(board);
 		
 		return boardService.selectBoardList();
+	}
+	
+	@GetMapping("/board/detail/{id}")
+	public BoardEntity getBoardDetail(@PathVariable(required = true) int id) throws Exception{
+		
+		BoardEntity board = new BoardEntity();
+		board.setId(id);
+		board.setUser_id("sunlike0301");
+		board.setContents("내 목숨을 아이어에");
+		
+		return board;
 	}
 }

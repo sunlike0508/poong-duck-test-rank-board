@@ -1,8 +1,10 @@
 package poongduck.board.controller;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.File;
@@ -98,7 +100,7 @@ class BoardControllerTest {
 			iDatabaseConnection.close();
 		}
 	}
-	
+
 	@Test
 	@DisplayName("게시글 리스트 출력 메소드 테스트")
 	public void testOpenBoardList() throws Exception {
@@ -144,6 +146,19 @@ class BoardControllerTest {
 						.when(Option.IGNORING_ARRAY_ORDER)
 						.isEqualTo(expectedBoardEntitylist);
 	}
+
+	@Test
+	@DisplayName("게시글 상세 내용 출력 메소드 테스트")
+	public void testGetBoardDetail() throws Exception {
+		
+		mockMvc.perform(get("/board/detail/1")
+						.accept(APPLICATION_JSON_UTF8))
+						.andExpect(status().isOk())
+						.andExpect(jsonPath("$.id", is(1)))
+						.andExpect(jsonPath("$.user_id", is("sunlike0301")))
+						.andExpect(jsonPath("$.contents", is("내 목숨을 아이어에")))
+						.andDo(print());
+    }
 
 	public BoardEntity makeGivenBoardEntity() {
 		BoardEntity givenBoardEntity = new BoardEntity();

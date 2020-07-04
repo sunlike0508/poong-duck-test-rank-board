@@ -25,13 +25,13 @@ public class BoardController {
 	
 	@Autowired
 	private BoardService boardService;
-	// 글 리스트 보기 메소드
+
 	@GetMapping(BOARD_LIST_URL)
 	public List<BoardEntity> openBoardList() throws Exception{
 		
 		return boardService.selectBoardList();
 	}
-	// 글쓰기 메소드
+
 	@PostMapping(path = BOARD_WRITE_URL, produces = JSON_UTF8)
 	public List<BoardEntity> writeBoard(@RequestBody BoardEntity board) throws Exception{
 
@@ -39,7 +39,7 @@ public class BoardController {
 		
 		return boardService.selectBoardList();
 	}
-	// 글 상세 보기 메소드
+
 	@GetMapping(BOARD_DETAIL + ID)
 	public BoardEntity getBoardDetail(@PathVariable(required = true) int id) throws Exception{
 		

@@ -24,6 +24,10 @@ repositories {
 dependencies {
 	testCompile group: 'org.unitils', name: 'unitils-test', version: '3.4.6'
 	testCompile group: 'org.dbunit', name: 'dbunit', version: '2.7.0'
+	testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit', version: '2.18.1'
+	testCompile group: 'net.javacrumbs.json-unit', name: 'json-unit-assertj', version: '2.18.1'
+	compile group: 'net.javacrumbs.json-unit', name: 'json-unit-spring', version: '2.18.1'
+	compile group: 'com.github.mjeanroy', name: 'dbunit-plus', version: '2.0.1'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'

@@ -66,7 +66,8 @@ class BoardControllerTest {
 	private static final String JSON_IGNORE_CREATE_AT = "[*].create_at";
 	private static final String JSON_IGNORE_UPDATE_AT = "[*].update_at";
 	
-	private static final String BOARD_JSON = "board.json";
+	private static final String EXPECTED_BOARD_LIST_JSON = "expected_board_list.json";
+	private static final String EXPECTED_BOARD_WRITE_JSON = "expected_board_write.json";
 	private static final String BOARD_XMl = "src/main/resources/Board.xml";
 	
 	private ObjectMapper objectMapper = new ObjectMapper();
@@ -117,7 +118,7 @@ class BoardControllerTest {
 						.whenIgnoringPaths(JSON_IGNORE_ID, JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
 						.when(Option.IGNORING_ARRAY_ORDER)
 						.isEqualTo(objectMapper.readValue(
-								getClass().getClassLoader().getResourceAsStream(BOARD_JSON), BoardEntity[].class));
+								getClass().getClassLoader().getResourceAsStream(EXPECTED_BOARD_LIST_JSON), BoardEntity[].class));
     }
 
 	@Test
@@ -137,8 +138,7 @@ class BoardControllerTest {
 
 		//expected
     	List<BoardEntity> expectedBoardEntitylist = new ObjectMapper().readValue(
-    			getClass().getClassLoader().getResourceAsStream(BOARD_JSON), new TypeReference<List<BoardEntity>>() {});
-    	expectedBoardEntitylist.add(givenBoardEntity);
+    			getClass().getClassLoader().getResourceAsStream(EXPECTED_BOARD_WRITE_JSON), new TypeReference<List<BoardEntity>>() {});
     	
     	//then
 		assertThatJson(mockMVcResult.getResponse().getContentAsString())

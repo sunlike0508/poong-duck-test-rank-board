@@ -25,13 +25,13 @@ public class BoardController {
 	
 	@Autowired
 	private BoardService boardService;
-	
+	// openBoardList
 	@GetMapping(BOARD_LIST_URL)
 	public List<BoardEntity> openBoardList() throws Exception{
 		
 		return boardService.selectBoardList();
 	}
-	
+	// writeBoard
 	@PostMapping(path = BOARD_WRITE_URL, produces = JSON_UTF8)
 	public List<BoardEntity> writeBoard(@RequestBody BoardEntity board) throws Exception{
 
@@ -39,7 +39,7 @@ public class BoardController {
 		
 		return boardService.selectBoardList();
 	}
-	
+	// getBoardDetail
 	@GetMapping(BOARD_DETAIL + ID)
 	public BoardEntity getBoardDetail(@PathVariable(required = true) int id) throws Exception{
 		

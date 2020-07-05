@@ -19,7 +19,7 @@ public class BoardServiceImpl implements BoardService{
 	public PoongduckResponseEntity selectBoardList(int page) {
 		PoongduckResponseEntity poongduckResponseEntity = new PoongduckResponseEntity();
 		
-		poongduckResponseEntity.setBoard_list(boardRepository.findAll(PageRequest.of(0, 5, Direction.DESC, "id")));
+		poongduckResponseEntity.setBoard_list(boardRepository.findAll(PageRequest.of(page, 5, Direction.DESC, "id")));
 		
 		return poongduckResponseEntity;
 	}

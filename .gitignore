@@ -5,6 +5,7 @@ bin/
 gradle/
 gradlew
 gradlew.bat
+/WEB-INF/
 src/main/resouces/application.properties
 *.properties
 !gradle/wrapper/gradle-wrapper.jar

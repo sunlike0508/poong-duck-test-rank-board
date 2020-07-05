@@ -9,10 +9,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Properties;
 
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +27,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.javacrumbs.jsonunit.core.Option;
@@ -39,6 +38,7 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.ext.mysql.MySqlConnection;
 import org.dbunit.operation.DatabaseOperation;
@@ -64,13 +64,16 @@ class BoardControllerTest {
 	private static final String DRIVER_CLASS_PASSWORD = "spring.datasource.password";
 	private static final String DRIVER_CLASS_SCHEMA = "spring.datasource.hikari.schema";
 	
-	private static final String JSON_IGNORE_ID = "[*].id";
-	private static final String JSON_IGNORE_CREATE_AT = "[*].create_at";
-	private static final String JSON_IGNORE_UPDATE_AT = "[*].update_at";
+	private static final String JSON_IGNORE_ID = "board_list.[*].id";
+	private static final String JSON_IGNORE_CREATE_AT = "board_list[*].create_at";
+	private static final String JSON_IGNORE_UPDATE_AT = "board_list[*].update_at";
 	
 	private static final String EXPECTED_BOARD_LIST_JSON = "expected_board_list.json";
+	private static final String EXPECTED_BOARD_LIST_JSON_02 = "expected_board_list_02.json";
 	private static final String EXPECTED_BOARD_WRITE_JSON = "expected_board_write.json";
+	
 	private static final String BOARD_XMl = "src/main/resources/Board.xml";
+	private static final String BOARD_XMl_02 = "src/main/resources/Board_02.xml";
 	
 	private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -93,8 +96,6 @@ class BoardControllerTest {
 		Class.forName(dirver);
 		iDatabaseConnection = new MySqlConnection(DriverManager.getConnection(url, username, passward), schema);
 		iDatabaseConnection.getConfig().setProperty(DatabaseConfig.FEATURE_QUALIFIED_TABLE_NAMES, false);
-
-		DatabaseOperation.CLEAN_INSERT.execute(iDatabaseConnection, new FlatXmlDataSetBuilder().build(new File(BOARD_XMl)));
     }
 
 	@AfterEach
@@ -103,10 +104,12 @@ class BoardControllerTest {
 			iDatabaseConnection.close();
 		}
 	}
-
+	
 	@Test
-	@DisplayName("게시글 리스트 출력 메소드 테스트")
-	public void testOpenBoardList() throws Exception {
+	@DisplayName("게시글 리스트 출력 메소드 테스트. 총 데이터 2개이고 page 첫 번째일 경우 기대 값 expected_board_list.json")
+	public void Given_BoardDataTwoAndPage1_When_openBoardList_Then_expected_board_list_json() throws Exception {
+		
+		setDataBase(BOARD_XMl);
 		
     	//when
     	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + "0")
@@ -122,7 +125,28 @@ class BoardControllerTest {
 						.isEqualTo(objectMapper.readValue(
 								getClass().getClassLoader().getResourceAsStream(EXPECTED_BOARD_LIST_JSON), PoongduckResponseEntity.class));
     }
-	@Disabled
+	
+	@Test
+	@DisplayName("게시글 리스트 출력 메소드 테스트. 총 데이터 12개이고 page 첫 번째일 경우 기대값 expected_board_list_02.json")
+	public void Given_BoardData12AndPage1_When_openBoardList_Then_expected_board_list_02_json() throws Exception {
+		
+		setDataBase(BOARD_XMl_02);
+		
+    	//when
+    	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + "0")
+						    			.accept(APPLICATION_JSON_UTF8))
+						    			.andExpect(status().isOk())
+						    			.andDo(print())
+						    			.andReturn();
+		
+    	//then
+		assertThatJson(mockMVcResult.getResponse().getContentAsString())
+						.whenIgnoringPaths(JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
+						.when(Option.IGNORING_ARRAY_ORDER)
+						.isEqualTo(objectMapper.readValue(
+								getClass().getClassLoader().getResourceAsStream(EXPECTED_BOARD_LIST_JSON_02), PoongduckResponseEntity.class));
+    }
+
 	@Test
 	@DisplayName("게시글 작성 메소드 테스트")
 	public void testWriteBoard() throws Exception {
@@ -134,13 +158,13 @@ class BoardControllerTest {
 		MvcResult mockMVcResult = mockMvc.perform(post(BoardController.BOARD_WRITE_URL)
 										.content(objectMapper.writeValueAsString(givenBoardEntity))
 										.contentType(APPLICATION_JSON_UTF8))
-										.andExpect(status().isOk())
+										.andExpect(status().isCreated())
 						    			.andDo(print())
 						    			.andReturn();
 
 		//expected
-    	List<BoardEntity> expectedBoardEntitylist = new ObjectMapper().readValue(
-    			getClass().getClassLoader().getResourceAsStream(EXPECTED_BOARD_WRITE_JSON), new TypeReference<List<BoardEntity>>() {});
+		PoongduckResponseEntity expectedBoardEntitylist = new ObjectMapper().readValue(
+    			getClass().getClassLoader().getResourceAsStream(EXPECTED_BOARD_WRITE_JSON), PoongduckResponseEntity.class);
     	
     	//then
 		assertThatJson(mockMVcResult.getResponse().getContentAsString())
@@ -162,6 +186,11 @@ class BoardControllerTest {
 						.andExpect(jsonPath("$.contents", is("내 목숨을 아이어에")))
 						.andDo(print());
     }
+	
+	public void setDataBase(String databaseXML)
+			throws DatabaseUnitException, SQLException, MalformedURLException, DataSetException {
+		DatabaseOperation.CLEAN_INSERT.execute(iDatabaseConnection, new FlatXmlDataSetBuilder().build(new File(databaseXML)));
+	}
 
 	public BoardEntity makeGivenBoardEntity() {
 		BoardEntity givenBoardEntity = new BoardEntity();

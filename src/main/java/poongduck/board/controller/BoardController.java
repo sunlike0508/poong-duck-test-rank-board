@@ -1,7 +1,5 @@
 package poongduck.board.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import poongduck.board.entity.BoardEntity;
 import poongduck.board.service.BoardService;
+import poongduck.response.entity.PoongduckResponseEntity;
 
 @RestController
 public class BoardController {
@@ -26,19 +25,19 @@ public class BoardController {
 	@Autowired
 	private BoardService boardService;
 
-	@GetMapping(BOARD_LIST_URL)
-	public List<BoardEntity> openBoardList() throws Exception{
+	@GetMapping(BOARD_LIST_URL + "{page}")
+	public PoongduckResponseEntity openBoardList(@PathVariable(required = true) int page) throws Exception{
 		
-		return boardService.selectBoardList();
+		return boardService.selectBoardList(page);
 	}
 
-	@PostMapping(path = BOARD_WRITE_URL, produces = JSON_UTF8)
-	public List<BoardEntity> writeBoard(@RequestBody BoardEntity board) throws Exception{
-
-		boardService.saveBoard(board);
-		
-		return boardService.selectBoardList();
-	}
+//	@PostMapping(path = BOARD_WRITE_URL, produces = JSON_UTF8)
+//	public List<BoardEntity> writeBoard(@RequestBody BoardEntity board) throws Exception{
+//
+//		boardService.saveBoard(board);
+//		
+//		return boardService.selectBoardList();
+//	}
 
 	@GetMapping(BOARD_DETAIL + ID)
 	public BoardEntity getBoardDetail(@PathVariable(required = true) int id) throws Exception{

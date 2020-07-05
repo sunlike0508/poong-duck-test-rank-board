@@ -1,13 +1,12 @@
 package poongduck.board.service;
 
-import java.util.List;
-
 import poongduck.board.entity.BoardEntity;
+import poongduck.response.entity.PoongduckResponseEntity;
 
 
 public interface BoardService {
 
-	List<BoardEntity> selectBoardList();
+	PoongduckResponseEntity selectBoardList(int page);
 
 	void saveBoard(BoardEntity board);
 

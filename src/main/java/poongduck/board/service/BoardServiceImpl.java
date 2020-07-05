@@ -1,11 +1,12 @@
 package poongduck.board.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import poongduck.board.entity.BoardEntity;
 import poongduck.board.repository.BoardRepository;
+import poongduck.response.entity.PoongduckResponseEntity;
 
 @Service
 public class BoardServiceImpl implements BoardService{
@@ -15,9 +16,12 @@ public class BoardServiceImpl implements BoardService{
 
 	
 	@Override
-	public List<BoardEntity> selectBoardList() {
+	public PoongduckResponseEntity selectBoardList(int page) {
+		PoongduckResponseEntity poongduckResponseEntity = new PoongduckResponseEntity();
 		
-		return boardRepository.findAllByOrderByIdDesc();
+		poongduckResponseEntity.setBoard_list(boardRepository.findAll(PageRequest.of(0, 5, Direction.DESC, "id")));
+		
+		return poongduckResponseEntity;
 	}
 
 	@Override

@@ -72,7 +72,7 @@ class BoardControllerTest {
 	private static final String BOARD_XMl = "src/main/resources/Board.xml";
 	private static final String BOARD_XMl_02 = "src/main/resources/Board_02.xml";
 	
-	private static final int FIRST_PAGE = 0;
+	private static final int FIRST_PAGE = 1;
 	
 	private ObjectMapper objectMapper = new ObjectMapper();
 	

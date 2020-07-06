@@ -42,5 +42,5 @@
 		}
 	],
 	"previous_page": null,
-	"after_page": null
+	"after_page": "https://localhost:8080/board/2"
 }

@@ -23,11 +23,12 @@ public class BoardController {
 	private static final String JSON_UTF8 = "application/json;charset=UTF-8";
 	
 	private static final String ID = "{id}";
+	private static final String PAGE = "{page}";
 	
 	@Autowired
 	private BoardService boardService;
 
-	@GetMapping(BOARD_LIST_URL + "{page}")
+	@GetMapping(BOARD_LIST_URL + PAGE)
 	public PoongduckResponseEntity openBoardList(@PathVariable(required = true) int page) throws Exception{
 		
 		return boardService.selectBoardList(page);

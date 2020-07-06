@@ -22,18 +22,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.javacrumbs.jsonunit.core.Option;
 import poongduck.board.entity.BoardEntity;
-import poongduck.board.repository.BoardRepository;
 import poongduck.board.service.BoardService;
 import poongduck.response.entity.PoongduckResponseEntity;
 
@@ -79,6 +78,8 @@ class BoardControllerTest {
 	private static final String BOARD_XMl = "src/main/resources/Board.xml";
 	private static final String BOARD_XMl_02 = "src/main/resources/Board_02.xml";
 	
+	private static final int FIRST_PAGE = 0;
+	
 	private ObjectMapper objectMapper = new ObjectMapper();
 	
 	@Autowired
@@ -119,7 +120,7 @@ class BoardControllerTest {
 		setDataBase(BOARD_XMl);
 		
     	//when
-    	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + "0")
+    	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + FIRST_PAGE)
 						    			.accept(APPLICATION_JSON_UTF8))
 						    			.andExpect(status().isOk())
 						    			.andDo(print())
@@ -129,8 +130,7 @@ class BoardControllerTest {
 		assertThatJson(mockMVcResult.getResponse().getContentAsString())
 						.whenIgnoringPaths(JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
 						.when(Option.IGNORING_ARRAY_ORDER)
-						.isEqualTo(objectMapper.readValue(
-								getClass().getClassLoader().getResourceAsStream(EXPECTED_BOARD_LIST_JSON), PoongduckResponseEntity.class));
+						.isEqualTo(expectedJson(EXPECTED_BOARD_LIST_JSON));
     }
 	
 	@Test
@@ -140,7 +140,7 @@ class BoardControllerTest {
 		setDataBase(BOARD_XMl_02);
 		
     	//when
-    	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + "0")
+    	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + FIRST_PAGE)
 						    			.accept(APPLICATION_JSON_UTF8))
 						    			.andExpect(status().isOk())
 						    			.andDo(print())
@@ -150,36 +150,27 @@ class BoardControllerTest {
 		assertThatJson(mockMVcResult.getResponse().getContentAsString())
 						.whenIgnoringPaths(JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
 						.when(Option.IGNORING_ARRAY_ORDER)
-						.isEqualTo(objectMapper.readValue(
-								getClass().getClassLoader().getResourceAsStream(EXPECTED_BOARD_LIST_JSON_02), PoongduckResponseEntity.class));
+						.isEqualTo(expectedJson(EXPECTED_BOARD_LIST_JSON_02));
     }
 
 	@Test
 	@DisplayName("게시글 작성 메소드 테스트")
-	public void testWriteBoard() throws Exception {
+	public void Given_new_BoardEntity_When_writeBoard_then_selectBoardList_of_boardService() throws Exception {
 		setDataBase(BOARD_XMl);
 		
-		//given
-		BoardEntity givenBoardEntity = makeGivenBoardEntity();
-		
-		//when
+		//given : makeGivenBoardEntity(), when
 		mockMvc.perform(post(BoardController.BOARD_WRITE_URL)
-					.content(objectMapper.writeValueAsString(givenBoardEntity))
+					.content(objectMapper.writeValueAsString(makeGivenBoardEntity()))
 					.contentType(APPLICATION_JSON_UTF8))
 					.andExpect(status().isCreated())
 	    			.andDo(print())
 	    			.andReturn();
 		
-		PoongduckResponseEntity actualPoongduckResponseEntity = boardService.selectBoardList(0);
-		//expected
-		PoongduckResponseEntity expectedPoongduckResponseEntity = new ObjectMapper().readValue(
-    			getClass().getClassLoader().getResourceAsStream(EXPECTED_BOARD_WRITE_JSON), PoongduckResponseEntity.class);
-    	
-    	//then
-		assertThatJson(actualPoongduckResponseEntity)
+    	//then : expected : expectedJson(EXPECTED_BOARD_WRITE_JSON), actual : boardService.selectBoardList(0)
+		assertThatJson(boardService.selectBoardList(FIRST_PAGE))
 						.whenIgnoringPaths(JSON_IGNORE_ID, JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
 						.when(Option.IGNORING_ARRAY_ORDER)
-						.isEqualTo(expectedPoongduckResponseEntity);
+						.isEqualTo(expectedJson(EXPECTED_BOARD_WRITE_JSON));
 	}
 	@Disabled
 	@Test
@@ -196,9 +187,12 @@ class BoardControllerTest {
 						.andDo(print());
     }
 	
-	public void setDataBase(String databaseXML)
-			throws DatabaseUnitException, SQLException, MalformedURLException, DataSetException {
+	public void setDataBase(String databaseXML) throws DatabaseUnitException, SQLException, MalformedURLException, DataSetException {
 		DatabaseOperation.CLEAN_INSERT.execute(iDatabaseConnection, new FlatXmlDataSetBuilder().build(new File(databaseXML)));
+	}
+	
+	private PoongduckResponseEntity expectedJson(String expectedJson) throws IOException, JsonParseException, JsonMappingException {
+		return objectMapper.readValue(getClass().getClassLoader().getResourceAsStream(expectedJson), PoongduckResponseEntity.class);
 	}
 
 	public BoardEntity makeGivenBoardEntity() {

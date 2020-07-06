@@ -16,11 +16,11 @@ import poongduck.response.entity.PoongduckResponseEntity;
 @RestController
 public class BoardController {
 	
-	public static final String BOARD_LIST_URL = "/board";
+	public static final String BOARD_LIST_URL = "/board/";
 	public static final String BOARD_WRITE_URL = "/board/write";
 	public static final String BOARD_DETAIL = "/board/detail/";
 	
-	private static final String JSON_UTF8 = "application/json;charset=UTF-8";
+	public static final String JSON_UTF8 = "application/json;charset=UTF-8";
 	
 	private static final String ID = "{id}";
 	private static final String PAGE = "{page}";

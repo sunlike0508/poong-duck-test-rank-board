@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.charset.Charset;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -22,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -54,10 +52,6 @@ import org.junit.jupiter.api.Disabled;
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 class BoardControllerTest {
-	
-	private static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), 
-																MediaType.APPLICATION_JSON.getSubtype(), 
-																Charset.forName("UTF-8"));
 
 	private static final String APPLICATION_PROPERTIES = "application.properties";
 	
@@ -121,7 +115,7 @@ class BoardControllerTest {
 		
     	//when
     	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + FIRST_PAGE)
-						    			.accept(APPLICATION_JSON_UTF8))
+						    			.accept(BoardController.JSON_UTF8))
 						    			.andExpect(status().isOk())
 						    			.andDo(print())
 						    			.andReturn();
@@ -141,7 +135,7 @@ class BoardControllerTest {
 		
     	//when
     	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + FIRST_PAGE)
-						    			.accept(APPLICATION_JSON_UTF8))
+						    			.accept(BoardController.JSON_UTF8))
 						    			.andExpect(status().isOk())
 						    			.andDo(print())
 						    			.andReturn();
@@ -161,7 +155,7 @@ class BoardControllerTest {
 		//given : makeGivenBoardEntity(), when
 		mockMvc.perform(post(BoardController.BOARD_WRITE_URL)
 					.content(objectMapper.writeValueAsString(makeGivenBoardEntity()))
-					.contentType(APPLICATION_JSON_UTF8))
+					.contentType(BoardController.JSON_UTF8))
 					.andExpect(status().isCreated())
 	    			.andDo(print())
 	    			.andReturn();
@@ -178,7 +172,7 @@ class BoardControllerTest {
 	public void testGetBoardDetail() throws Exception {
 		
 		mockMvc.perform(get(BoardController.BOARD_DETAIL + "1")
-						.accept(APPLICATION_JSON_UTF8))
+						.accept(BoardController.JSON_UTF8))
 						.andExpect(status().isOk())
 						.andExpect(jsonPath("$.id", is(1)))
 						.andExpect(jsonPath("$.user_id", is("sunlike0301")))

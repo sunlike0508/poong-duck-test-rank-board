@@ -8,7 +8,7 @@ public interface BoardService {
 
 	PoongduckResponseEntity selectBoardList(int page);
 
-	void saveBoard(BoardEntity board);
+	PoongduckResponseEntity saveBoard(BoardEntity board);
 
 	BoardEntity selectBoardDetail(int id);
 

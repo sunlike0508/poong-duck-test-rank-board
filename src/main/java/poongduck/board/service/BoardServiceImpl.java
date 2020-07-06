@@ -38,8 +38,13 @@ public class BoardServiceImpl implements BoardService{
 	}
 
 	@Override
-	public void saveBoard(BoardEntity board) {
+	public PoongduckResponseEntity saveBoard(BoardEntity board) {
+		PoongduckResponseEntity poongduckResponseEntity = new PoongduckResponseEntity();
+		
 		boardRepository.save(board);
+		poongduckResponseEntity.setContent(board);
+		
+		return poongduckResponseEntity;
 	}
 
 	@Override

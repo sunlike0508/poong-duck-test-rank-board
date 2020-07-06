@@ -36,9 +36,9 @@ public class BoardController {
 
 	@PostMapping(path = BOARD_WRITE_URL, produces = JSON_UTF8)
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public void writeBoard(@RequestBody BoardEntity board) throws Exception{
+	public PoongduckResponseEntity writeBoard(@RequestBody BoardEntity board) throws Exception{
 		
-		boardService.saveBoard(board);
+		return boardService.saveBoard(board);
 	}
 
 	@GetMapping(BOARD_DETAIL + ID)

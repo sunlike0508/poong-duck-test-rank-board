@@ -62,9 +62,9 @@ class BoardControllerTest {
 	private static final String DRIVER_CLASS_PASSWORD = "spring.datasource.password";
 	private static final String DRIVER_CLASS_SCHEMA = "spring.datasource.hikari.schema";
 	
-	private static final String JSON_IGNORE_ID = "board_list[*].id";
-	private static final String JSON_IGNORE_CREATE_AT = "board_list[*].create_at";
-	private static final String JSON_IGNORE_UPDATE_AT = "board_list[*].update_at";
+	private static final String JSON_IGNORE_ID = "$..id";
+	private static final String JSON_IGNORE_CREATE_AT = "$..create_at";
+	private static final String JSON_IGNORE_UPDATE_AT = "$..update_at";
 	
 	private static final String EXPECTED_BOARD_LIST_JSON = "expected_board_list.json";
 	private static final String EXPECTED_BOARD_LIST_JSON_01 = "expected_board_list_01.json";
@@ -198,15 +198,15 @@ class BoardControllerTest {
 		setDataBase(BOARD_XMl_DATA_2);
 		
 		//given : makeGivenBoardEntity(), when
-		mockMvc.perform(post(BoardController.BOARD_WRITE_URL)
+		MvcResult mockMVcResult = mockMvc.perform(post(BoardController.BOARD_WRITE_URL)
 					.content(objectMapper.writeValueAsString(makeGivenBoardEntity()))
 					.contentType(BoardController.JSON_UTF8))
 					.andExpect(status().isCreated())
 	    			.andDo(print())
 	    			.andReturn();
 		
-    	//then : actual : boardService.selectBoardList(0), expected : expectedJson(EXPECTED_BOARD_WRITE_JSON)
-		assertThatJson(boardService.selectBoardList(FIRST_PAGE))
+    	//then
+		assertThatJson(actualJson(mockMVcResult))
 						.whenIgnoringPaths(JSON_IGNORE_ID, JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
 						.when(Option.IGNORING_ARRAY_ORDER)
 						.isEqualTo(expectedJson(EXPECTED_BOARD_WRITE_JSON));

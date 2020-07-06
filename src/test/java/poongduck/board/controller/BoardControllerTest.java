@@ -64,6 +64,11 @@ class BoardControllerTest {
 	private static final String JSON_IGNORE_CREATE_AT = "$..create_at";
 	private static final String JSON_IGNORE_UPDATE_AT = "$..update_at";
 	
+	private static final String JSONPATH_CONTENT_ID = "$.content.id";
+	private static final String JSONPATH_CONTENT_USER_ID = "$.content.user_id";
+	private static final String JSONPATH_CONTENT_TITLE = "$.content.title";
+	private static final String JSONPATH_CONTENT_CONTENTS = "$.content.contents";
+	
 	private static final String EXPECTED_BOARD_LIST_JSON = "expected_board_list.json";
 	private static final String EXPECTED_BOARD_LIST_JSON_01 = "expected_board_list_01.json";
 	private static final String EXPECTED_BOARD_LIST_JSON_02 = "expected_board_list_02.json";
@@ -77,6 +82,8 @@ class BoardControllerTest {
 	private static final int FIRST_PAGE = 1;
 	private static final int SECOND_PAGE = 2;
 	private static final int LAST_PAGE = 3;
+	
+	private static final int BOARD_FRIST_ID = 1;
 	
 	private ObjectMapper objectMapper = new ObjectMapper();
 	
@@ -193,7 +200,7 @@ class BoardControllerTest {
 
 	@Test
 	@DisplayName("게시글 작성 메소드 테스트")
-	public void Given_new_BoardEntity_When_writeBoard_then_selectBoardList_of_boardService() throws Exception {
+	public void Given_new_BoardEntity_When_writeBoard_then_JsonPath_Values() throws Exception {
 		setDataBase(BOARD_XMl_DATA_2);
 		
 		//given : makeGivenBoardEntity(), when : BOARD_WRITE_URL, then : andExpect
@@ -201,26 +208,27 @@ class BoardControllerTest {
 						.content(objectMapper.writeValueAsString(makeGivenBoardEntity()))
 						.accept(JSON_UTF8)
 						.contentType(JSON_UTF8))
-						.andExpect(jsonPath("$.content.user_id", is("sunlike0303")))
-						.andExpect(jsonPath("$.content.title", is("LG 잡고 5위로 가즈아~")))
-						.andExpect(jsonPath("$.content.contents", is("원태인 삼성의 황태자~~~!!!")))
+						.andExpect(status().isCreated())
+						.andExpect(jsonPath(JSONPATH_CONTENT_USER_ID, is("sunlike0303")))
+						.andExpect(jsonPath(JSONPATH_CONTENT_TITLE, is("LG 잡고 5위로 가즈아~")))
+						.andExpect(jsonPath(JSONPATH_CONTENT_CONTENTS, is("원태인 삼성의 황태자~~~!!!")))
 		    			.andDo(print())
 		    			.andReturn();
 	}
 
 	@Test
 	@DisplayName("게시글 상세 내용 출력 메소드 테스트")
-	public void testGetBoardDetail() throws Exception {
+	public void Given_boardID_one_When_getBoardDetail_then_JsonPath_Values() throws Exception {
 		setDataBase(BOARD_XMl_DATA_2);
 		
 		//given : id = 1, when : BOARD_DETAIL, then : andExpect
-		mockMvc.perform(get(BoardController.BOARD_DETAIL + 1)
+		mockMvc.perform(get(BoardController.BOARD_DETAIL + BOARD_FRIST_ID)
 						.accept(JSON_UTF8))
 						.andExpect(status().isOk())
-						.andExpect(jsonPath("$.content.id", is(1)))
-						.andExpect(jsonPath("$.content.user_id", is("sunlike0301")))
-						.andExpect(jsonPath("$.content.title", is("최강 삼성 승리하리라~")))
-						.andExpect(jsonPath("$.content.contents", is("내 목숨을 아이어에")))
+						.andExpect(jsonPath(JSONPATH_CONTENT_ID, is(BOARD_FRIST_ID)))
+						.andExpect(jsonPath(JSONPATH_CONTENT_USER_ID, is("sunlike0301")))
+						.andExpect(jsonPath(JSONPATH_CONTENT_TITLE, is("최강 삼성 승리하리라~")))
+						.andExpect(jsonPath(JSONPATH_CONTENT_CONTENTS, is("내 목숨을 아이어에")))
 						.andDo(print());
     }
 	

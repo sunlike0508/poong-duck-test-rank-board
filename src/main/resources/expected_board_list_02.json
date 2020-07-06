@@ -41,6 +41,6 @@
 			"update_at": null
 		}
 	],
-	"previous_page": "https://localhost:8080/board/1",
-	"after_page": "https://localhost:8080/board/3"
+	"previous_page": "http://localhost/board/1",
+	"after_page": "http://localhost/board/3"
 }

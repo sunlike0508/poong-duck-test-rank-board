@@ -1,5 +1,7 @@
 package poongduck.board.service;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,17 +23,17 @@ public class BoardServiceImpl implements BoardService{
 
 	
 	@Override
-	public PoongduckResponseEntity selectBoardList(int page) {
+	public PoongduckResponseEntity selectBoardList(int page, HttpServletRequest request) {
 		PoongduckResponseEntity poongduckResponseEntity = new PoongduckResponseEntity();
 		Page<BoardEntity> boardPage = boardRepository.findAll(PageRequest.of(page-1, FIVE, DESC, ID));
 		poongduckResponseEntity.setBoard_list(boardPage.getContent());
 		
 		if(boardPage.hasPrevious()) {
-			poongduckResponseEntity.setPrevious_page("https://localhost:8080/board/" + (page-1));
+			poongduckResponseEntity.setPrevious_page(request.getRequestURL().toString() + (page - 1));
 		}
 		
 		if(boardPage.hasNext()) {
-			poongduckResponseEntity.setAfter_page("https://localhost:8080/board/" + (page+1));
+			poongduckResponseEntity.setAfter_page(request.getRequestURL().toString() + (page + 1));
 		}
 		
 		return poongduckResponseEntity;

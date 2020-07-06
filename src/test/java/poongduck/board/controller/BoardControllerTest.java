@@ -77,13 +77,17 @@ class BoardControllerTest {
 	private static final String BOARD_XMl_DATA_2 = "src/main/resources/Board.xml";
 	private static final String BOARD_XMl_DATA_12 = "src/main/resources/Board_01.xml";
 	
-	public static final String JSON_UTF8 = "application/json;charset=UTF-8";
+	private static final String JSON_UTF8 = "application/json;charset=UTF-8";
 	
-	private static final int FIRST_PAGE = 1;
-	private static final int SECOND_PAGE = 2;
-	private static final int LAST_PAGE = 3;
+	private static final String PAGE = "page";
+	private static final String ID = "id";
 	
-	private static final int BOARD_FRIST_ID = 1;
+	private static final String FIRST_PAGE = "1";
+	private static final String SECOND_PAGE = "2";
+	private static final String LAST_PAGE = "3";
+
+	private static final String BOARD_STRING_FRIST_ID = "1";
+	private static final int BOARD_INTEGER_FRIST_ID = 1;
 	
 	private ObjectMapper objectMapper = new ObjectMapper();
 	
@@ -125,7 +129,8 @@ class BoardControllerTest {
 		setDataBase(BOARD_XMl_DATA_2);
 		
     	//when
-    	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + FIRST_PAGE)
+    	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL)
+    									.param(PAGE, FIRST_PAGE)
 						    			.accept(JSON_UTF8))
 						    			.andExpect(status().isOk())
 						    			.andDo(print())
@@ -145,7 +150,8 @@ class BoardControllerTest {
 		setDataBase(BOARD_XMl_DATA_12);
 		
     	//when
-    	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + FIRST_PAGE)
+    	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL)
+    									.param(PAGE, FIRST_PAGE)
 						    			.accept(JSON_UTF8))
 						    			.andExpect(status().isOk())
 						    			.andDo(print())
@@ -165,7 +171,8 @@ class BoardControllerTest {
 		setDataBase(BOARD_XMl_DATA_12);
 		
     	//when
-    	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + SECOND_PAGE)
+    	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL)
+    									.param(PAGE, SECOND_PAGE)
 						    			.accept(JSON_UTF8))
 						    			.andExpect(status().isOk())
 						    			.andDo(print())
@@ -185,7 +192,8 @@ class BoardControllerTest {
 		setDataBase(BOARD_XMl_DATA_12);
 		
     	//when
-    	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + LAST_PAGE)
+    	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL)
+    									.param(PAGE, LAST_PAGE)
 						    			.accept(JSON_UTF8))
 						    			.andExpect(status().isOk())
 						    			.andDo(print())
@@ -222,10 +230,11 @@ class BoardControllerTest {
 		setDataBase(BOARD_XMl_DATA_2);
 		
 		//given : id = 1, when : BOARD_DETAIL, then : andExpect
-		mockMvc.perform(get(BoardController.BOARD_DETAIL + BOARD_FRIST_ID)
+		mockMvc.perform(get(BoardController.BOARD_DETAIL)
+						.param(ID, BOARD_STRING_FRIST_ID)
 						.accept(JSON_UTF8))
 						.andExpect(status().isOk())
-						.andExpect(jsonPath(JSONPATH_CONTENT_ID, is(BOARD_FRIST_ID)))
+						.andExpect(jsonPath(JSONPATH_CONTENT_ID, is(BOARD_INTEGER_FRIST_ID)))
 						.andExpect(jsonPath(JSONPATH_CONTENT_USER_ID, is("sunlike0301")))
 						.andExpect(jsonPath(JSONPATH_CONTENT_TITLE, is("최강 삼성 승리하리라~")))
 						.andExpect(jsonPath(JSONPATH_CONTENT_CONTENTS, is("내 목숨을 아이어에")))

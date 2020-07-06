@@ -1,11 +1,9 @@
 package poongduck.rank.service;
 
-import java.util.List;
-
-import poongduck.rank.entity.RankUser;
+import poongduck.response.entity.PoongduckResponseEntity;
 
 public interface RankService {
 
-	List<RankUser> getRankList();
+	PoongduckResponseEntity getRankList();
 
 }

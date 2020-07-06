@@ -47,9 +47,9 @@ class RankControllerTest {
 	
 	private static final String JSON_UTF8 = "application/json;charset=UTF-8";
 	
-	private static final String FIRST_ARRAY = "$.[0].";
-	private static final String SECOND_ARRAY = "$.[1].";
-	private static final String THIRD_ARRAY = "$.[2].";
+	private static final String FIRST_ARRAY = "$.ranking[0].";
+	private static final String SECOND_ARRAY = "$.ranking[1].";
+	private static final String THIRD_ARRAY = "$.ranking[2].";
 	
 	private static final String ID = "id";
 	private static final String NICKNAME = "nickname";

@@ -1,13 +1,11 @@
 package poongduck.rank.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import poongduck.rank.entity.RankUser;
 import poongduck.rank.service.RankService;
+import poongduck.response.entity.PoongduckResponseEntity;
 
 @RestController
 public class RankController {
@@ -18,7 +16,7 @@ public class RankController {
 	public static final String RANK = "/rank";
 
 	@GetMapping(value=RANK)
-	public List<RankUser> getRankList() throws Exception{
+	public PoongduckResponseEntity getRankList() throws Exception{
 		
 		return rankService.getRankList();
 	}

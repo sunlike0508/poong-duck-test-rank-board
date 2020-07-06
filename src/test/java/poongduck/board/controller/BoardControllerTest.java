@@ -69,6 +69,7 @@ class BoardControllerTest {
 	private static final String EXPECTED_BOARD_LIST_JSON = "expected_board_list.json";
 	private static final String EXPECTED_BOARD_LIST_JSON_01 = "expected_board_list_01.json";
 	private static final String EXPECTED_BOARD_LIST_JSON_02 = "expected_board_list_02.json";
+	private static final String EXPECTED_BOARD_LIST_JSON_03 = "expected_board_list_03.json";
 	private static final String EXPECTED_BOARD_WRITE_JSON = "expected_board_write.json";
 	
 	private static final String BOARD_XMl_DATA_2 = "src/main/resources/Board.xml";
@@ -76,6 +77,7 @@ class BoardControllerTest {
 	
 	private static final int FIRST_PAGE = 1;
 	private static final int SECOND_PAGE = 2;
+	private static final int LAST_PAGE = 3;
 	
 	private ObjectMapper objectMapper = new ObjectMapper();
 	
@@ -168,6 +170,26 @@ class BoardControllerTest {
 						.whenIgnoringPaths(JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
 						.when(Option.IGNORING_ARRAY_ORDER)
 						.isEqualTo(expectedJson(EXPECTED_BOARD_LIST_JSON_02));
+    }
+	
+	@Test
+	@DisplayName("게시글 리스트 출력 메소드 테스트. 총 데이터 12개이고 마지막 page일 경우 기대값 expected_board_list_03.json")
+	public void Given_BoardData12AndLastPage_When_openBoardList_Then_expected_board_list_03_json() throws Exception {
+		
+		setDataBase(BOARD_XMl_DATA_12);
+		
+    	//when
+    	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + LAST_PAGE)
+						    			.accept(BoardController.JSON_UTF8))
+						    			.andExpect(status().isOk())
+						    			.andDo(print())
+						    			.andReturn();
+		
+    	//then
+		assertThatJson(actualJson(mockMVcResult))
+						.whenIgnoringPaths(JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
+						.when(Option.IGNORING_ARRAY_ORDER)
+						.isEqualTo(expectedJson(EXPECTED_BOARD_LIST_JSON_03));
     }
 
 	@Test

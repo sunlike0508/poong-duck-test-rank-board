@@ -70,16 +70,19 @@ class RankControllerTest {
 	
 	@Test
 	@DisplayName("랭크 리스트 출력 메소드 테스트")
-	public void testOpenBoardList() throws Exception {
+	public void test_getRankList() throws Exception {
 		
 		mockMvc.perform(get(RankController.RANK))
 						.andExpect(status().isOk())
-						.andExpect(jsonPath("$.[0].id", is(1)))
-						.andExpect(jsonPath("$.[0].nickname", is("sunlike0301")))
-						.andExpect(jsonPath("$.[0].point", is(100)))
-						.andExpect(jsonPath("$.[1].id", is(2)))
-						.andExpect(jsonPath("$.[1].nickname", is("sunlike0302")))
-						.andExpect(jsonPath("$.[1].point", is(50)))
+						.andExpect(jsonPath("$.[0].id", is(3)))
+						.andExpect(jsonPath("$.[0].nickname", is("바다의태양")))
+						.andExpect(jsonPath("$.[0].point", is(150)))
+						.andExpect(jsonPath("$.[1].id", is(1)))
+						.andExpect(jsonPath("$.[1].nickname", is("sunlike0301")))
+						.andExpect(jsonPath("$.[1].point", is(100)))
+						.andExpect(jsonPath("$.[2].id", is(2)))
+						.andExpect(jsonPath("$.[2].nickname", is("sunlike0302")))
+						.andExpect(jsonPath("$.[2].point", is(50)))
 						.andDo(print());
 	}
 	

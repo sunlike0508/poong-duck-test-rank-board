@@ -61,8 +61,7 @@ class BoardControllerTest {
 	private static final String DRIVER_CLASS_USERNAME = "spring.datasource.username";
 	private static final String DRIVER_CLASS_PASSWORD = "spring.datasource.password";
 	private static final String DRIVER_CLASS_SCHEMA = "spring.datasource.hikari.schema";
-	
-	private static final String JSON_IGNORE_ID = "$..id";
+
 	private static final String JSON_IGNORE_CREATE_AT = "$..create_at";
 	private static final String JSON_IGNORE_UPDATE_AT = "$..update_at";
 	
@@ -70,7 +69,6 @@ class BoardControllerTest {
 	private static final String EXPECTED_BOARD_LIST_JSON_01 = "expected_board_list_01.json";
 	private static final String EXPECTED_BOARD_LIST_JSON_02 = "expected_board_list_02.json";
 	private static final String EXPECTED_BOARD_LIST_JSON_03 = "expected_board_list_03.json";
-	private static final String EXPECTED_BOARD_WRITE_JSON = "expected_board_write.json";
 	
 	private static final String BOARD_XMl_DATA_2 = "src/main/resources/Board.xml";
 	private static final String BOARD_XMl_DATA_12 = "src/main/resources/Board_01.xml";
@@ -197,19 +195,15 @@ class BoardControllerTest {
 	public void Given_new_BoardEntity_When_writeBoard_then_selectBoardList_of_boardService() throws Exception {
 		setDataBase(BOARD_XMl_DATA_2);
 		
-		//given : makeGivenBoardEntity(), when
-		MvcResult mockMVcResult = mockMvc.perform(post(BoardController.BOARD_WRITE_URL)
-					.content(objectMapper.writeValueAsString(makeGivenBoardEntity()))
-					.contentType(BoardController.JSON_UTF8))
-					.andExpect(status().isCreated())
-	    			.andDo(print())
-	    			.andReturn();
-		
-    	//then
-		assertThatJson(actualJson(mockMVcResult))
-						.whenIgnoringPaths(JSON_IGNORE_ID, JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
-						.when(Option.IGNORING_ARRAY_ORDER)
-						.isEqualTo(expectedJson(EXPECTED_BOARD_WRITE_JSON));
+		//given : makeGivenBoardEntity(), when : BOARD_WRITE_URL, then : andExpect
+		mockMvc.perform(post(BoardController.BOARD_WRITE_URL)
+						.content(objectMapper.writeValueAsString(makeGivenBoardEntity()))
+						.contentType(BoardController.JSON_UTF8))
+						.andExpect(jsonPath("$.content.user_id", is("sunlike0303")))
+						.andExpect(jsonPath("$.content.title", is("LG 잡고 5위로 가즈아~")))
+						.andExpect(jsonPath("$.content.contents", is("원태인 삼성의 황태자~~~!!!")))
+		    			.andDo(print())
+		    			.andReturn();
 	}
 	@Disabled
 	@Test

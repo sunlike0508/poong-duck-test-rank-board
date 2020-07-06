@@ -10,6 +10,6 @@ public interface BoardService {
 
 	PoongduckResponseEntity saveBoard(BoardEntity board);
 
-	BoardEntity selectBoardDetail(int id);
+	PoongduckResponseEntity selectBoardDetail(int id);
 
 }

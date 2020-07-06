@@ -46,7 +46,6 @@ import org.dbunit.ext.mysql.MySqlConnection;
 import org.dbunit.operation.DatabaseOperation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 
 
 @RunWith(SpringRunner.class)
@@ -72,6 +71,8 @@ class BoardControllerTest {
 	
 	private static final String BOARD_XMl_DATA_2 = "src/main/resources/Board.xml";
 	private static final String BOARD_XMl_DATA_12 = "src/main/resources/Board_01.xml";
+	
+	public static final String JSON_UTF8 = "application/json;charset=UTF-8";
 	
 	private static final int FIRST_PAGE = 1;
 	private static final int SECOND_PAGE = 2;
@@ -118,7 +119,7 @@ class BoardControllerTest {
 		
     	//when
     	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + FIRST_PAGE)
-						    			.accept(BoardController.JSON_UTF8))
+						    			.accept(JSON_UTF8))
 						    			.andExpect(status().isOk())
 						    			.andDo(print())
 						    			.andReturn();
@@ -138,7 +139,7 @@ class BoardControllerTest {
 		
     	//when
     	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + FIRST_PAGE)
-						    			.accept(BoardController.JSON_UTF8))
+						    			.accept(JSON_UTF8))
 						    			.andExpect(status().isOk())
 						    			.andDo(print())
 						    			.andReturn();
@@ -158,7 +159,7 @@ class BoardControllerTest {
 		
     	//when
     	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + SECOND_PAGE)
-						    			.accept(BoardController.JSON_UTF8))
+						    			.accept(JSON_UTF8))
 						    			.andExpect(status().isOk())
 						    			.andDo(print())
 						    			.andReturn();
@@ -178,7 +179,7 @@ class BoardControllerTest {
 		
     	//when
     	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + LAST_PAGE)
-						    			.accept(BoardController.JSON_UTF8))
+						    			.accept(JSON_UTF8))
 						    			.andExpect(status().isOk())
 						    			.andDo(print())
 						    			.andReturn();
@@ -198,25 +199,28 @@ class BoardControllerTest {
 		//given : makeGivenBoardEntity(), when : BOARD_WRITE_URL, then : andExpect
 		mockMvc.perform(post(BoardController.BOARD_WRITE_URL)
 						.content(objectMapper.writeValueAsString(makeGivenBoardEntity()))
-						.contentType(BoardController.JSON_UTF8))
+						.accept(JSON_UTF8)
+						.contentType(JSON_UTF8))
 						.andExpect(jsonPath("$.content.user_id", is("sunlike0303")))
 						.andExpect(jsonPath("$.content.title", is("LG 잡고 5위로 가즈아~")))
 						.andExpect(jsonPath("$.content.contents", is("원태인 삼성의 황태자~~~!!!")))
 		    			.andDo(print())
 		    			.andReturn();
 	}
-	@Disabled
+
 	@Test
 	@DisplayName("게시글 상세 내용 출력 메소드 테스트")
 	public void testGetBoardDetail() throws Exception {
+		setDataBase(BOARD_XMl_DATA_2);
 		
-		mockMvc.perform(get(BoardController.BOARD_DETAIL + "1")
-						.accept(BoardController.JSON_UTF8))
+		//given : id = 1, when : BOARD_DETAIL, then : andExpect
+		mockMvc.perform(get(BoardController.BOARD_DETAIL + 1)
+						.accept(JSON_UTF8))
 						.andExpect(status().isOk())
-						.andExpect(jsonPath("$.id", is(1)))
-						.andExpect(jsonPath("$.user_id", is("sunlike0301")))
-						.andExpect(jsonPath("$.title", is("최강 삼성 승리하리라~")))
-						.andExpect(jsonPath("$.contents", is("내 목숨을 아이어에")))
+						.andExpect(jsonPath("$.content.id", is(1)))
+						.andExpect(jsonPath("$.content.user_id", is("sunlike0301")))
+						.andExpect(jsonPath("$.content.title", is("최강 삼성 승리하리라~")))
+						.andExpect(jsonPath("$.content.contents", is("내 목숨을 아이어에")))
 						.andDo(print());
     }
 	

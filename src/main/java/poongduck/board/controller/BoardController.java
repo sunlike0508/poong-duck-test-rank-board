@@ -20,8 +20,6 @@ public class BoardController {
 	public static final String BOARD_WRITE_URL = "/board/write";
 	public static final String BOARD_DETAIL = "/board/detail/";
 	
-	public static final String JSON_UTF8 = "application/json;charset=UTF-8";
-	
 	private static final String ID = "{id}";
 	private static final String PAGE = "{page}";
 	
@@ -34,7 +32,7 @@ public class BoardController {
 		return boardService.selectBoardList(page);
 	}
 
-	@PostMapping(path = BOARD_WRITE_URL, produces = JSON_UTF8)
+	@PostMapping(path = BOARD_WRITE_URL)
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public PoongduckResponseEntity writeBoard(@RequestBody BoardEntity board) throws Exception{
 		
@@ -42,7 +40,7 @@ public class BoardController {
 	}
 
 	@GetMapping(BOARD_DETAIL + ID)
-	public BoardEntity getBoardDetail(@PathVariable(required = true) int id) throws Exception{
+	public PoongduckResponseEntity getBoardDetail(@PathVariable(required = true) int id) throws Exception{
 		
 		return boardService.selectBoardDetail(id);
 	}

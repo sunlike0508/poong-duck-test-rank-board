@@ -48,7 +48,11 @@ public class BoardServiceImpl implements BoardService{
 	}
 
 	@Override
-	public BoardEntity selectBoardDetail(int id) {
-		return boardRepository.findById(id).get();
+	public PoongduckResponseEntity selectBoardDetail(int id) {
+		PoongduckResponseEntity poongduckResponseEntity = new PoongduckResponseEntity();
+		
+		poongduckResponseEntity.setContent(boardRepository.findById(id).get());
+		
+		return poongduckResponseEntity;
 	}
 }

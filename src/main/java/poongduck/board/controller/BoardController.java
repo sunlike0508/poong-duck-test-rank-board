@@ -22,11 +22,14 @@ public class BoardController {
 	public static final String BOARD_WRITE_URL = "/board/write";
 	public static final String BOARD_DETAIL = "/board/detail/";
 	
+	private static final String PAGE = "page";
+	private static final String ID = "id";
+	
 	@Autowired
 	private BoardService boardService;
 
 	@GetMapping(BOARD_LIST_URL)
-	public PoongduckResponseEntity openBoardList(@RequestParam("page") int page, HttpServletRequest request) throws Exception{
+	public PoongduckResponseEntity openBoardList(@RequestParam(PAGE) int page, HttpServletRequest request) throws Exception{
 		
 		return boardService.selectBoardList(page, request);
 	}
@@ -39,7 +42,7 @@ public class BoardController {
 	}
 
 	@GetMapping(BOARD_DETAIL)
-	public PoongduckResponseEntity getBoardDetail(@RequestParam("id") int id) throws Exception{
+	public PoongduckResponseEntity getBoardDetail(@RequestParam(ID) int id) throws Exception{
 		
 		return boardService.selectBoardDetail(id);
 	}

@@ -225,7 +225,7 @@ class BoardControllerTest {
 	}
 
 	@Test
-	@DisplayName("게시글 상세 내용 출력 메소드 테스트")
+	@DisplayName("게시글 상세 내용 출력 메소드 테스트. board id가 1인 게시글 상세내용 가져오기")
 	public void Given_boardID_one_When_getBoardDetail_then_JsonPath_Values() throws Exception {
 		setDataBase(BOARD_XMl_DATA_2);
 		

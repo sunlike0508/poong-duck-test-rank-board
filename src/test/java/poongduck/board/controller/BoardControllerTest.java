@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,6 +33,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.javacrumbs.jsonunit.core.Option;
 import poongduck.board.entity.BoardEntity;
+import poongduck.board.repository.BoardRepository;
+import poongduck.board.service.BoardService;
 import poongduck.response.entity.PoongduckResponseEntity;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
@@ -64,7 +68,7 @@ class BoardControllerTest {
 	private static final String DRIVER_CLASS_PASSWORD = "spring.datasource.password";
 	private static final String DRIVER_CLASS_SCHEMA = "spring.datasource.hikari.schema";
 	
-	private static final String JSON_IGNORE_ID = "board_list.[*].id";
+	private static final String JSON_IGNORE_ID = "board_list[*].id";
 	private static final String JSON_IGNORE_CREATE_AT = "board_list[*].create_at";
 	private static final String JSON_IGNORE_UPDATE_AT = "board_list[*].update_at";
 	
@@ -76,6 +80,9 @@ class BoardControllerTest {
 	private static final String BOARD_XMl_02 = "src/main/resources/Board_02.xml";
 	
 	private ObjectMapper objectMapper = new ObjectMapper();
+	
+	@Autowired
+	BoardService boardService;
 
 	@Autowired
 	MockMvc mockMvc;
@@ -150,6 +157,7 @@ class BoardControllerTest {
 	@Test
 	@DisplayName("게시글 작성 메소드 테스트")
 	public void testWriteBoard() throws Exception {
+		setDataBase(BOARD_XMl);
 		
 		//given
 		BoardEntity givenBoardEntity = makeGivenBoardEntity();
@@ -161,16 +169,17 @@ class BoardControllerTest {
 					.andExpect(status().isCreated())
 	    			.andDo(print())
 	    			.andReturn();
-
-//		//expected
-//		PoongduckResponseEntity expectedBoardEntitylist = new ObjectMapper().readValue(
-//    			getClass().getClassLoader().getResourceAsStream(EXPECTED_BOARD_WRITE_JSON), PoongduckResponseEntity.class);
-//    	
-//    	//then
-//		assertThatJson(mockMVcResult.getResponse().getContentAsString())
-//						.whenIgnoringPaths(JSON_IGNORE_ID, JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
-//						.when(Option.IGNORING_ARRAY_ORDER)
-//						.isEqualTo(expectedBoardEntitylist);
+		
+		PoongduckResponseEntity actualPoongduckResponseEntity = boardService.selectBoardList(0);
+		//expected
+		PoongduckResponseEntity expectedPoongduckResponseEntity = new ObjectMapper().readValue(
+    			getClass().getClassLoader().getResourceAsStream(EXPECTED_BOARD_WRITE_JSON), PoongduckResponseEntity.class);
+    	
+    	//then
+		assertThatJson(actualPoongduckResponseEntity)
+						.whenIgnoringPaths(JSON_IGNORE_ID, JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
+						.when(Option.IGNORING_ARRAY_ORDER)
+						.isEqualTo(expectedPoongduckResponseEntity);
 	}
 	@Disabled
 	@Test

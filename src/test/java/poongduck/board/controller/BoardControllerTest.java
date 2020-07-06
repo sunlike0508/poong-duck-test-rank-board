@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -66,13 +67,15 @@ class BoardControllerTest {
 	private static final String JSON_IGNORE_UPDATE_AT = "board_list[*].update_at";
 	
 	private static final String EXPECTED_BOARD_LIST_JSON = "expected_board_list.json";
+	private static final String EXPECTED_BOARD_LIST_JSON_01 = "expected_board_list_01.json";
 	private static final String EXPECTED_BOARD_LIST_JSON_02 = "expected_board_list_02.json";
 	private static final String EXPECTED_BOARD_WRITE_JSON = "expected_board_write.json";
 	
 	private static final String BOARD_XMl = "src/main/resources/Board.xml";
-	private static final String BOARD_XMl_02 = "src/main/resources/Board_02.xml";
+	private static final String BOARD_XMl_01 = "src/main/resources/Board_01.xml";
 	
 	private static final int FIRST_PAGE = 1;
+	private static final int SECOND_PAGE = 2;
 	
 	private ObjectMapper objectMapper = new ObjectMapper();
 	
@@ -121,17 +124,17 @@ class BoardControllerTest {
 						    			.andReturn();
 		
     	//then
-		assertThatJson(mockMVcResult.getResponse().getContentAsString())
+		assertThatJson(actualJson(mockMVcResult))
 						.whenIgnoringPaths(JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
 						.when(Option.IGNORING_ARRAY_ORDER)
 						.isEqualTo(expectedJson(EXPECTED_BOARD_LIST_JSON));
     }
 	
 	@Test
-	@DisplayName("게시글 리스트 출력 메소드 테스트. 총 데이터 12개이고 page 첫 번째일 경우 기대값 expected_board_list_02.json")
-	public void Given_BoardData12AndPage1_When_openBoardList_Then_expected_board_list_02_json() throws Exception {
+	@DisplayName("게시글 리스트 출력 메소드 테스트. 총 데이터 12개이고 page 첫 번째일 경우 기대값 expected_board_list_01.json")
+	public void Given_BoardData12AndPage1_When_openBoardList_Then_expected_board_list_01_json() throws Exception {
 		
-		setDataBase(BOARD_XMl_02);
+		setDataBase(BOARD_XMl_01);
 		
     	//when
     	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + FIRST_PAGE)
@@ -141,7 +144,27 @@ class BoardControllerTest {
 						    			.andReturn();
 		
     	//then
-		assertThatJson(mockMVcResult.getResponse().getContentAsString())
+		assertThatJson(actualJson(mockMVcResult))
+						.whenIgnoringPaths(JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
+						.when(Option.IGNORING_ARRAY_ORDER)
+						.isEqualTo(expectedJson(EXPECTED_BOARD_LIST_JSON_01));
+    }
+	
+	@Test
+	@DisplayName("게시글 리스트 출력 메소드 테스트. 총 데이터 12개이고 page 두 번째일 경우 기대값 expected_board_list_02.json")
+	public void Given_BoardData12AndPage2_When_openBoardList_Then_expected_board_list_02_json() throws Exception {
+		
+		setDataBase(BOARD_XMl_01);
+		
+    	//when
+    	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + SECOND_PAGE)
+						    			.accept(BoardController.JSON_UTF8))
+						    			.andExpect(status().isOk())
+						    			.andDo(print())
+						    			.andReturn();
+		
+    	//then
+		assertThatJson(actualJson(mockMVcResult))
 						.whenIgnoringPaths(JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
 						.when(Option.IGNORING_ARRAY_ORDER)
 						.isEqualTo(expectedJson(EXPECTED_BOARD_LIST_JSON_02));
@@ -160,7 +183,7 @@ class BoardControllerTest {
 	    			.andDo(print())
 	    			.andReturn();
 		
-    	//then : expected : expectedJson(EXPECTED_BOARD_WRITE_JSON), actual : boardService.selectBoardList(0)
+    	//then : actual : boardService.selectBoardList(0), expected : expectedJson(EXPECTED_BOARD_WRITE_JSON)
 		assertThatJson(boardService.selectBoardList(FIRST_PAGE))
 						.whenIgnoringPaths(JSON_IGNORE_ID, JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
 						.when(Option.IGNORING_ARRAY_ORDER)
@@ -183,6 +206,10 @@ class BoardControllerTest {
 	
 	public void setDataBase(String databaseXML) throws DatabaseUnitException, SQLException, MalformedURLException, DataSetException {
 		DatabaseOperation.CLEAN_INSERT.execute(iDatabaseConnection, new FlatXmlDataSetBuilder().build(new File(databaseXML)));
+	}
+	
+	private String actualJson(MvcResult mockMVcResult) throws UnsupportedEncodingException {
+		return mockMVcResult.getResponse().getContentAsString();
 	}
 	
 	private PoongduckResponseEntity expectedJson(String expectedJson) throws IOException, JsonParseException, JsonMappingException {

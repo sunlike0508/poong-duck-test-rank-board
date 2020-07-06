@@ -1,46 +1,46 @@
 {
 	"board_list": [
 		{
-			"id": 7,
-			"user_id": "sunlike0307",
+			"id": 12,
+			"user_id": "sunlike0312",
 			"title": "최강 삼성 승리하리라~",
 			"contents": "내 목숨을 호드에",
 			"create_at": null,
 			"update_at": null
 		},
 		{
-			"id": 6,
-			"user_id": "sunlike0306",
+			"id": 11,
+			"user_id": "sunlike0311",
 			"title": "최강 삼성 승리하리라~",
 			"contents": "내 목숨을 호드에",
 			"create_at": null,
 			"update_at": null
 		},
 		{
-			"id": 5,
-			"user_id": "sunlike0305",
+			"id": 10,
+			"user_id": "sunlike0310",
 			"title": "최강 삼성 승리하리라~",
 			"contents": "내 목숨을 호드에",
 			"create_at": null,
 			"update_at": null
 		},
 		{
-			"id": 4,
-			"user_id": "sunlike0304",
+			"id": 9,
+			"user_id": "sunlike0309",
 			"title": "최강 삼성 승리하리라~",
 			"contents": "내 목숨을 호드에",
 			"create_at": null,
 			"update_at": null
 		},
 		{
-			"id": 3,
-			"user_id": "sunlike0303",
+			"id": 8,
+			"user_id": "sunlike0308",
 			"title": "최강 삼성 승리하리라~",
 			"contents": "내 목숨을 호드에",
 			"create_at":  null,
 			"update_at": null
 		}
 	],
-	"previous_page": "https://localhost:8080/board/1",
-	"after_page": "https://localhost:8080/board/3"
+	"previous_page": null,
+	"after_page": "https://localhost:8080/board/2"
 }

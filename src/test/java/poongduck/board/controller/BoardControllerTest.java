@@ -71,8 +71,8 @@ class BoardControllerTest {
 	private static final String EXPECTED_BOARD_LIST_JSON_02 = "expected_board_list_02.json";
 	private static final String EXPECTED_BOARD_WRITE_JSON = "expected_board_write.json";
 	
-	private static final String BOARD_XMl = "src/main/resources/Board.xml";
-	private static final String BOARD_XMl_01 = "src/main/resources/Board_01.xml";
+	private static final String BOARD_XMl_DATA_2 = "src/main/resources/Board.xml";
+	private static final String BOARD_XMl_DATA_12 = "src/main/resources/Board_01.xml";
 	
 	private static final int FIRST_PAGE = 1;
 	private static final int SECOND_PAGE = 2;
@@ -114,7 +114,7 @@ class BoardControllerTest {
 	@DisplayName("게시글 리스트 출력 메소드 테스트. 총 데이터 2개이고 page 첫 번째일 경우 기대 값 expected_board_list.json")
 	public void Given_BoardDataTwoAndPage1_When_openBoardList_Then_expected_board_list_json() throws Exception {
 		
-		setDataBase(BOARD_XMl);
+		setDataBase(BOARD_XMl_DATA_2);
 		
     	//when
     	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + FIRST_PAGE)
@@ -134,7 +134,7 @@ class BoardControllerTest {
 	@DisplayName("게시글 리스트 출력 메소드 테스트. 총 데이터 12개이고 page 첫 번째일 경우 기대값 expected_board_list_01.json")
 	public void Given_BoardData12AndPage1_When_openBoardList_Then_expected_board_list_01_json() throws Exception {
 		
-		setDataBase(BOARD_XMl_01);
+		setDataBase(BOARD_XMl_DATA_12);
 		
     	//when
     	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + FIRST_PAGE)
@@ -154,7 +154,7 @@ class BoardControllerTest {
 	@DisplayName("게시글 리스트 출력 메소드 테스트. 총 데이터 12개이고 page 두 번째일 경우 기대값 expected_board_list_02.json")
 	public void Given_BoardData12AndPage2_When_openBoardList_Then_expected_board_list_02_json() throws Exception {
 		
-		setDataBase(BOARD_XMl_01);
+		setDataBase(BOARD_XMl_DATA_12);
 		
     	//when
     	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL + SECOND_PAGE)
@@ -173,7 +173,7 @@ class BoardControllerTest {
 	@Test
 	@DisplayName("게시글 작성 메소드 테스트")
 	public void Given_new_BoardEntity_When_writeBoard_then_selectBoardList_of_boardService() throws Exception {
-		setDataBase(BOARD_XMl);
+		setDataBase(BOARD_XMl_DATA_2);
 		
 		//given : makeGivenBoardEntity(), when
 		mockMvc.perform(post(BoardController.BOARD_WRITE_URL)

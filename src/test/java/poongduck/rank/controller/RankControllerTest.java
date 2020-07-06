@@ -44,6 +44,14 @@ class RankControllerTest {
 	private static final String DRIVER_CLASS_SCHEMA = "spring.datasource.hikari.schema";
 	
 	private static final String RANK_XMl = "src/main/resources/rank.xml";
+	
+	private static final String FIRST_ARRAY = "$.[0].";
+	private static final String SECOND_ARRAY = "$.[1].";
+	private static final String THIRD_ARRAY = "$.[2].";
+	
+	private static final String ID = "id";
+	private static final String NICKNAME = "nickname";
+	private static final String POINT = "point";
 
 	@Autowired
 	MockMvc mockMvc;
@@ -74,15 +82,15 @@ class RankControllerTest {
 		
 		mockMvc.perform(get(RankController.RANK))
 						.andExpect(status().isOk())
-						.andExpect(jsonPath("$.[0].id", is(3)))
-						.andExpect(jsonPath("$.[0].nickname", is("바다의태양")))
-						.andExpect(jsonPath("$.[0].point", is(150)))
-						.andExpect(jsonPath("$.[1].id", is(1)))
-						.andExpect(jsonPath("$.[1].nickname", is("sunlike0301")))
-						.andExpect(jsonPath("$.[1].point", is(100)))
-						.andExpect(jsonPath("$.[2].id", is(2)))
-						.andExpect(jsonPath("$.[2].nickname", is("sunlike0302")))
-						.andExpect(jsonPath("$.[2].point", is(50)))
+						.andExpect(jsonPath(FIRST_ARRAY + ID, is(3)))
+						.andExpect(jsonPath(FIRST_ARRAY + NICKNAME, is("바다의태양")))
+						.andExpect(jsonPath(FIRST_ARRAY + POINT, is(150)))
+						.andExpect(jsonPath(SECOND_ARRAY + ID, is(1)))
+						.andExpect(jsonPath(SECOND_ARRAY + NICKNAME, is("sunlike0301")))
+						.andExpect(jsonPath(SECOND_ARRAY + POINT, is(100)))
+						.andExpect(jsonPath(THIRD_ARRAY + ID, is(2)))
+						.andExpect(jsonPath(THIRD_ARRAY + NICKNAME, is("sunlike0302")))
+						.andExpect(jsonPath(THIRD_ARRAY + POINT, is(50)))
 						.andDo(print());
 	}
 	

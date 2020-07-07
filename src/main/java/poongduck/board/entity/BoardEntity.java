@@ -31,6 +31,9 @@ public class BoardEntity {
 	private String user_id;
 	
 	@Column(nullable=false)
+	private String title;
+	
+	@Column(nullable=false)
 	private String contents;
 	
 	@Column(nullable=false)

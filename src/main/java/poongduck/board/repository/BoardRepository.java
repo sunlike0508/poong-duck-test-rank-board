@@ -1,11 +1,11 @@
 package poongduck.board.repository;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import poongduck.board.entity.BoardEntity;
 
 public interface BoardRepository extends CrudRepository<BoardEntity, Integer>{
 
-	List<BoardEntity> findAllByOrderByIdDesc();
+	Page<BoardEntity> findAll(Pageable pageable);
 }

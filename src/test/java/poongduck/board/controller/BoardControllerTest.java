@@ -9,10 +9,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Properties;
 
 import org.junit.jupiter.api.DisplayName;
@@ -22,22 +22,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.javacrumbs.jsonunit.core.Option;
 import poongduck.board.entity.BoardEntity;
+import poongduck.board.service.BoardService;
+import poongduck.response.entity.PoongduckResponseEntity;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.ext.mysql.MySqlConnection;
 import org.dbunit.operation.DatabaseOperation;
@@ -49,10 +52,6 @@ import org.junit.jupiter.api.BeforeEach;
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 class BoardControllerTest {
-	
-	private static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), 
-																MediaType.APPLICATION_JSON.getSubtype(), 
-																Charset.forName("UTF-8"));
 
 	private static final String APPLICATION_PROPERTIES = "application.properties";
 	
@@ -61,15 +60,39 @@ class BoardControllerTest {
 	private static final String DRIVER_CLASS_USERNAME = "spring.datasource.username";
 	private static final String DRIVER_CLASS_PASSWORD = "spring.datasource.password";
 	private static final String DRIVER_CLASS_SCHEMA = "spring.datasource.hikari.schema";
+
+	private static final String JSON_IGNORE_CREATE_AT = "$..create_at";
+	private static final String JSON_IGNORE_UPDATE_AT = "$..update_at";
 	
-	private static final String JSON_IGNORE_ID = "[*].id";
-	private static final String JSON_IGNORE_CREATE_AT = "[*].create_at";
-	private static final String JSON_IGNORE_UPDATE_AT = "[*].update_at";
+	private static final String JSONPATH_CONTENT_ID = "$.content.id";
+	private static final String JSONPATH_CONTENT_USER_ID = "$.content.user_id";
+	private static final String JSONPATH_CONTENT_TITLE = "$.content.title";
+	private static final String JSONPATH_CONTENT_CONTENTS = "$.content.contents";
 	
-	private static final String BOARD_JSON = "board.json";
-	private static final String BOARD_XMl = "src/main/resources/Board.xml";
+	private static final String EXPECTED_BOARD_LIST_JSON = "expected_board_list.json";
+	private static final String EXPECTED_BOARD_LIST_JSON_01 = "expected_board_list_01.json";
+	private static final String EXPECTED_BOARD_LIST_JSON_02 = "expected_board_list_02.json";
+	private static final String EXPECTED_BOARD_LIST_JSON_03 = "expected_board_list_03.json";
+	
+	private static final String BOARD_XMl_DATA_2 = "src/main/resources/Board.xml";
+	private static final String BOARD_XMl_DATA_12 = "src/main/resources/Board_01.xml";
+	
+	private static final String JSON_UTF8 = "application/json;charset=UTF-8";
+	
+	private static final String PAGE = "page";
+	private static final String ID = "id";
+	
+	private static final String FIRST_PAGE = "1";
+	private static final String SECOND_PAGE = "2";
+	private static final String LAST_PAGE = "3";
+
+	private static final String BOARD_STRING_FRIST_ID = "1";
+	private static final int BOARD_INTEGER_FRIST_ID = 1;
 	
 	private ObjectMapper objectMapper = new ObjectMapper();
+	
+	@Autowired
+	BoardService boardService;
 
 	@Autowired
 	MockMvc mockMvc;
@@ -90,8 +113,6 @@ class BoardControllerTest {
 		Class.forName(dirver);
 		iDatabaseConnection = new MySqlConnection(DriverManager.getConnection(url, username, passward), schema);
 		iDatabaseConnection.getConfig().setProperty(DatabaseConfig.FEATURE_QUALIFIED_TABLE_NAMES, false);
-
-		DatabaseOperation.CLEAN_INSERT.execute(iDatabaseConnection, new FlatXmlDataSetBuilder().build(new File(BOARD_XMl)));
     }
 
 	@AfterEach
@@ -100,70 +121,143 @@ class BoardControllerTest {
 			iDatabaseConnection.close();
 		}
 	}
-
+	
 	@Test
-	@DisplayName("게시글 리스트 출력 메소드 테스트")
-	public void testOpenBoardList() throws Exception {
+	@DisplayName("게시글 리스트 출력 메소드 테스트. 총 데이터 2개이고 page 첫 번째일 경우 기대 값 expected_board_list.json")
+	public void Given_BoardDataTwoAndPage1_When_openBoardList_Then_expected_board_list_json() throws Exception {
+		
+		setDataBase(BOARD_XMl_DATA_2);
 		
     	//when
     	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL)
-						    			.accept(APPLICATION_JSON_UTF8))
+    									.param(PAGE, FIRST_PAGE)
+						    			.accept(JSON_UTF8))
 						    			.andExpect(status().isOk())
 						    			.andDo(print())
 						    			.andReturn();
 		
     	//then
-		assertThatJson(mockMVcResult.getResponse().getContentAsString())
-						.whenIgnoringPaths(JSON_IGNORE_ID, JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
+		assertThatJson(actualJson(mockMVcResult))
+						.whenIgnoringPaths(JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
 						.when(Option.IGNORING_ARRAY_ORDER)
-						.isEqualTo(objectMapper.readValue(
-								getClass().getClassLoader().getResourceAsStream(BOARD_JSON), BoardEntity[].class));
+						.isEqualTo(expectedJson(EXPECTED_BOARD_LIST_JSON));
+    }
+	
+	@Test
+	@DisplayName("게시글 리스트 출력 메소드 테스트. 총 데이터 12개이고 page 첫 번째일 경우 기대값 expected_board_list_01.json")
+	public void Given_BoardData12AndPage1_When_openBoardList_Then_expected_board_list_01_json() throws Exception {
+		
+		setDataBase(BOARD_XMl_DATA_12);
+		
+    	//when
+    	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL)
+    									.param(PAGE, FIRST_PAGE)
+						    			.accept(JSON_UTF8))
+						    			.andExpect(status().isOk())
+						    			.andDo(print())
+						    			.andReturn();
+		
+    	//then
+		assertThatJson(actualJson(mockMVcResult))
+						.whenIgnoringPaths(JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
+						.when(Option.IGNORING_ARRAY_ORDER)
+						.isEqualTo(expectedJson(EXPECTED_BOARD_LIST_JSON_01));
+    }
+	
+	@Test
+	@DisplayName("게시글 리스트 출력 메소드 테스트. 총 데이터 12개이고 page 두 번째일 경우 기대값 expected_board_list_02.json")
+	public void Given_BoardData12AndPage2_When_openBoardList_Then_expected_board_list_02_json() throws Exception {
+		
+		setDataBase(BOARD_XMl_DATA_12);
+		
+    	//when
+    	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL)
+    									.param(PAGE, SECOND_PAGE)
+						    			.accept(JSON_UTF8))
+						    			.andExpect(status().isOk())
+						    			.andDo(print())
+						    			.andReturn();
+		
+    	//then
+		assertThatJson(actualJson(mockMVcResult))
+						.whenIgnoringPaths(JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
+						.when(Option.IGNORING_ARRAY_ORDER)
+						.isEqualTo(expectedJson(EXPECTED_BOARD_LIST_JSON_02));
+    }
+	
+	@Test
+	@DisplayName("게시글 리스트 출력 메소드 테스트. 총 데이터 12개이고 마지막 page일 경우 기대값 expected_board_list_03.json")
+	public void Given_BoardData12AndLastPage_When_openBoardList_Then_expected_board_list_03_json() throws Exception {
+		
+		setDataBase(BOARD_XMl_DATA_12);
+		
+    	//when
+    	MvcResult mockMVcResult = mockMvc.perform(get(BoardController.BOARD_LIST_URL)
+    									.param(PAGE, LAST_PAGE)
+						    			.accept(JSON_UTF8))
+						    			.andExpect(status().isOk())
+						    			.andDo(print())
+						    			.andReturn();
+		
+    	//then
+		assertThatJson(actualJson(mockMVcResult))
+						.whenIgnoringPaths(JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
+						.when(Option.IGNORING_ARRAY_ORDER)
+						.isEqualTo(expectedJson(EXPECTED_BOARD_LIST_JSON_03));
     }
 
 	@Test
 	@DisplayName("게시글 작성 메소드 테스트")
-	public void testWriteBoard() throws Exception {
+	public void Given_new_BoardEntity_When_writeBoard_then_JsonPath_Values() throws Exception {
+		setDataBase(BOARD_XMl_DATA_2);
 		
-		//given
-		BoardEntity givenBoardEntity = makeGivenBoardEntity();
-		
-		//when
-		MvcResult mockMVcResult = mockMvc.perform(post(BoardController.BOARD_WRITE_URL)
-										.content(objectMapper.writeValueAsString(givenBoardEntity))
-										.contentType(APPLICATION_JSON_UTF8))
-										.andExpect(status().isOk())
-						    			.andDo(print())
-						    			.andReturn();
-
-		//expected
-    	List<BoardEntity> expectedBoardEntitylist = new ObjectMapper().readValue(
-    			getClass().getClassLoader().getResourceAsStream(BOARD_JSON), new TypeReference<List<BoardEntity>>() {});
-    	expectedBoardEntitylist.add(givenBoardEntity);
-    	
-    	//then
-		assertThatJson(mockMVcResult.getResponse().getContentAsString())
-						.whenIgnoringPaths(JSON_IGNORE_ID, JSON_IGNORE_CREATE_AT, JSON_IGNORE_UPDATE_AT)
-						.when(Option.IGNORING_ARRAY_ORDER)
-						.isEqualTo(expectedBoardEntitylist);
+		//given : makeGivenBoardEntity(), when : BOARD_WRITE_URL, then : andExpect
+		mockMvc.perform(post(BoardController.BOARD_WRITE_URL)
+						.content(objectMapper.writeValueAsString(makeGivenBoardEntity()))
+						.accept(JSON_UTF8)
+						.contentType(JSON_UTF8))
+						.andExpect(status().isCreated())
+						.andExpect(jsonPath(JSONPATH_CONTENT_USER_ID, is("sunlike0303")))
+						.andExpect(jsonPath(JSONPATH_CONTENT_TITLE, is("LG 잡고 5위로 가즈아~")))
+						.andExpect(jsonPath(JSONPATH_CONTENT_CONTENTS, is("원태인 삼성의 황태자~~~!!!")))
+		    			.andDo(print())
+		    			.andReturn();
 	}
 
 	@Test
-	@DisplayName("게시글 상세 내용 출력 메소드 테스트")
-	public void testGetBoardDetail() throws Exception {
+	@DisplayName("게시글 상세 내용 출력 메소드 테스트. board id가 1인 게시글 상세내용 가져오기")
+	public void Given_boardID_one_When_getBoardDetail_then_JsonPath_Values() throws Exception {
+		setDataBase(BOARD_XMl_DATA_2);
 		
-		mockMvc.perform(get(BoardController.BOARD_DETAIL + "1")
-						.accept(APPLICATION_JSON_UTF8))
+		//given : id = 1, when : BOARD_DETAIL, then : andExpect
+		mockMvc.perform(get(BoardController.BOARD_DETAIL)
+						.param(ID, BOARD_STRING_FRIST_ID)
+						.accept(JSON_UTF8))
 						.andExpect(status().isOk())
-						.andExpect(jsonPath("$.id", is(1)))
-						.andExpect(jsonPath("$.user_id", is("sunlike0301")))
-						.andExpect(jsonPath("$.contents", is("내 목숨을 아이어에")))
+						.andExpect(jsonPath(JSONPATH_CONTENT_ID, is(BOARD_INTEGER_FRIST_ID)))
+						.andExpect(jsonPath(JSONPATH_CONTENT_USER_ID, is("sunlike0301")))
+						.andExpect(jsonPath(JSONPATH_CONTENT_TITLE, is("최강 삼성 승리하리라~")))
+						.andExpect(jsonPath(JSONPATH_CONTENT_CONTENTS, is("내 목숨을 아이어에")))
 						.andDo(print());
     }
+	
+	public void setDataBase(String databaseXML) throws DatabaseUnitException, SQLException, MalformedURLException, DataSetException {
+		DatabaseOperation.CLEAN_INSERT.execute(iDatabaseConnection, new FlatXmlDataSetBuilder().build(new File(databaseXML)));
+	}
+	
+	private String actualJson(MvcResult mockMVcResult) throws UnsupportedEncodingException {
+		return mockMVcResult.getResponse().getContentAsString();
+	}
+	
+	private PoongduckResponseEntity expectedJson(String expectedJson) throws IOException, JsonParseException, JsonMappingException {
+		return objectMapper.readValue(getClass().getClassLoader().getResourceAsStream(expectedJson), PoongduckResponseEntity.class);
+	}
 
 	public BoardEntity makeGivenBoardEntity() {
 		BoardEntity givenBoardEntity = new BoardEntity();
 		givenBoardEntity.setUser_id("sunlike0303");
-		givenBoardEntity.setContents("호드를 위하여");
+		givenBoardEntity.setTitle("LG 잡고 5위로 가즈아~");
+		givenBoardEntity.setContents("원태인 삼성의 황태자~~~!!!");
 		
 		return givenBoardEntity;
 	}

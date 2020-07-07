@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-	<board id="1" user_id="sunlike0301" contents="내 목숨을 아이어에" create_at="2020-06-30" update_at="2020-06-30" />
-	<board id="2" user_id="sunlike0302" contents="내 목숨을 호드에" create_at="2020-06-30" update_at="2020-06-30"/>
+	<board id="1" user_id="sunlike0301" title="최강 삼성 승리하리라~" contents="내 목숨을 아이어에" 
+		create_at="2020-06-30" update_at="2020-06-30" />
+	<board id="2" user_id="sunlike0302" title="SK가 이제는 몰락이구나~" contents="내 목숨을 호드에" 
+		create_at="2020-06-30" update_at="2020-06-30"/>
 </dataset>

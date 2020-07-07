@@ -1,16 +1,17 @@
 package poongduck.board.service;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 import poongduck.board.entity.BoardEntity;
+import poongduck.response.entity.PoongduckResponseEntity;
 
 
 public interface BoardService {
 
-	List<BoardEntity> selectBoardList();
+	PoongduckResponseEntity selectBoardList(int page, HttpServletRequest request);
 
-	void saveBoard(BoardEntity board);
+	PoongduckResponseEntity saveBoard(BoardEntity board);
 
-	BoardEntity selectBoardDetail(int id);
+	PoongduckResponseEntity selectBoardDetail(int id);
 
 }

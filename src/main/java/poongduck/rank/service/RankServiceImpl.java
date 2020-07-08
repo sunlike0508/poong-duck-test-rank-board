@@ -1,12 +1,10 @@
 package poongduck.rank.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import poongduck.rank.entity.RankUser;
 import poongduck.rank.repository.RankRepository;
+import poongduck.response.entity.PoongduckResponseEntity;
 
 @Service
 public class RankServiceImpl implements RankService {
@@ -15,9 +13,11 @@ public class RankServiceImpl implements RankService {
 	private RankRepository rankRepository;
 
 	@Override
-	public List<RankUser> getRankList() {
+	public PoongduckResponseEntity getRankList() {
 		
-		return rankRepository.findAllByOrderByPointDesc();
+		PoongduckResponseEntity poongduckResponseEntity = new PoongduckResponseEntity();
+		poongduckResponseEntity.setRanking(rankRepository.findAllByOrderByPointDesc());
+		return poongduckResponseEntity;
 	}
 
 }

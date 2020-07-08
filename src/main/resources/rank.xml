@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-	<rank_user id="1" nickname="sunlike0301" point="100" />
-	<rank_user id="2" nickname="sunlike0302" point="50" />
+	<rank_user id="1" nickname="sunlike0301" club = "산소래" point="100" />
+	<rank_user id="2" nickname="sunlike0302" club = "사통백이"  point="50" />
+	<rank_user id="3" nickname="바다의태양" club = "굴렁쇠"  point="150" />
 </dataset>

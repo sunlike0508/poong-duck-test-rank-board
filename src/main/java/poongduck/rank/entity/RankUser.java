@@ -23,6 +23,9 @@ public class RankUser {
 	@Column(nullable=false)
 	private String nickname;
 	
+	@Column(nullable=false)
+	private String club;
+	
 	@Column
 	private int point;
 }

@@ -44,6 +44,17 @@ class RankControllerTest {
 	private static final String DRIVER_CLASS_SCHEMA = "spring.datasource.hikari.schema";
 	
 	private static final String RANK_XMl = "src/main/resources/rank.xml";
+	
+	private static final String JSON_UTF8 = "application/json;charset=UTF-8";
+	
+	private static final String FIRST_ARRAY = "$.ranking[0].";
+	private static final String SECOND_ARRAY = "$.ranking[1].";
+	private static final String THIRD_ARRAY = "$.ranking[2].";
+	
+	private static final String ID = "id";
+	private static final String NICKNAME = "nickname";
+	private static final String CLUB = "club";
+	private static final String POINT = "point";
 
 	@Autowired
 	MockMvc mockMvc;
@@ -70,16 +81,23 @@ class RankControllerTest {
 	
 	@Test
 	@DisplayName("랭크 리스트 출력 메소드 테스트")
-	public void testOpenBoardList() throws Exception {
+	public void test_getRankList() throws Exception {
 		
-		mockMvc.perform(get(RankController.RANK))
+		mockMvc.perform(get(RankController.RANK)
+						.accept(JSON_UTF8))
 						.andExpect(status().isOk())
-						.andExpect(jsonPath("$.[0].id", is(1)))
-						.andExpect(jsonPath("$.[0].nickname", is("sunlike0301")))
-						.andExpect(jsonPath("$.[0].point", is(100)))
-						.andExpect(jsonPath("$.[1].id", is(2)))
-						.andExpect(jsonPath("$.[1].nickname", is("sunlike0302")))
-						.andExpect(jsonPath("$.[1].point", is(50)))
+						.andExpect(jsonPath(FIRST_ARRAY + ID, is(3)))
+						.andExpect(jsonPath(FIRST_ARRAY + NICKNAME, is("바다의태양")))
+						.andExpect(jsonPath(FIRST_ARRAY + CLUB, is("굴렁쇠")))
+						.andExpect(jsonPath(FIRST_ARRAY + POINT, is(150)))
+						.andExpect(jsonPath(SECOND_ARRAY + ID, is(1)))
+						.andExpect(jsonPath(SECOND_ARRAY + NICKNAME, is("sunlike0301")))
+						.andExpect(jsonPath(SECOND_ARRAY + CLUB, is("산소래")))
+						.andExpect(jsonPath(SECOND_ARRAY + POINT, is(100)))
+						.andExpect(jsonPath(THIRD_ARRAY + ID, is(2)))
+						.andExpect(jsonPath(THIRD_ARRAY + NICKNAME, is("sunlike0302")))
+						.andExpect(jsonPath(THIRD_ARRAY + CLUB, is("사통백이")))
+						.andExpect(jsonPath(THIRD_ARRAY + POINT, is(50)))
 						.andDo(print());
 	}
 	

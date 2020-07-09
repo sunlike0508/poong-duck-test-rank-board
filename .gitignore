@@ -3,11 +3,8 @@ HELP.md
 build/
 bin/
 gradle/
-gradlew
-gradlew.bat
 /WEB-INF/
-src/main/resouces/application.properties
-*.properties
+application.properties
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/java**
 !**/src/main/resoucre/templates**

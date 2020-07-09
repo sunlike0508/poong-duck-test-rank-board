@@ -1,12 +1,14 @@
 package poongduck.rank.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import poongduck.rank.service.RankService;
 import poongduck.response.entity.PoongduckResponseEntity;
 
+@CrossOrigin
 @RestController
 public class RankController {
 	

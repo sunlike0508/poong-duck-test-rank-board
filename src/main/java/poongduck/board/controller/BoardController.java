@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import poongduck.board.entity.BoardEntity;
 import poongduck.board.service.BoardService;
-import poongduck.response.entity.PoongduckResponseEntity;
+import poongduck.response.entity.BoardResponseEntity;
 
 @CrossOrigin
 @RestController
@@ -31,20 +31,20 @@ public class BoardController {
 	private BoardService boardService;
 
 	@GetMapping(BOARD_LIST_URL)
-	public PoongduckResponseEntity openBoardList(@RequestParam(PAGE) int page, HttpServletRequest request) throws Exception{
+	public BoardResponseEntity openBoardList(@RequestParam(PAGE) int page, HttpServletRequest request) throws Exception{
 		
 		return boardService.selectBoardList(page, request);
 	}
 
 	@PostMapping(path = BOARD_WRITE_URL)
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public PoongduckResponseEntity writeBoard(@RequestBody BoardEntity board) throws Exception{
+	public BoardResponseEntity writeBoard(@RequestBody BoardEntity board) throws Exception{
 		
 		return boardService.saveBoard(board);
 	}
 
 	@GetMapping(BOARD_DETAIL)
-	public PoongduckResponseEntity getBoardDetail(@RequestParam(ID) int id) throws Exception{
+	public BoardResponseEntity getBoardDetail(@RequestParam(ID) int id) throws Exception{
 		
 		return boardService.selectBoardDetail(id);
 	}

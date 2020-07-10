@@ -9,7 +9,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import poongduck.board.entity.BoardEntity;
 import poongduck.board.repository.BoardRepository;
-import poongduck.response.entity.PoongduckResponseEntity;
+import poongduck.response.entity.BoardResponseEntity;
 
 @Service
 public class BoardServiceImpl implements BoardService{
@@ -23,8 +23,8 @@ public class BoardServiceImpl implements BoardService{
 
 	
 	@Override
-	public PoongduckResponseEntity selectBoardList(int page, HttpServletRequest request) {
-		PoongduckResponseEntity poongduckResponseEntity = new PoongduckResponseEntity();
+	public BoardResponseEntity selectBoardList(int page, HttpServletRequest request) {
+		BoardResponseEntity poongduckResponseEntity = new BoardResponseEntity();
 		Page<BoardEntity> boardPage = boardRepository.findAll(PageRequest.of(page-1, FIVE, DESC, ID));
 		poongduckResponseEntity.setBoard_list(boardPage.getContent());
 		
@@ -40,8 +40,8 @@ public class BoardServiceImpl implements BoardService{
 	}
 
 	@Override
-	public PoongduckResponseEntity saveBoard(BoardEntity board) {
-		PoongduckResponseEntity poongduckResponseEntity = new PoongduckResponseEntity();
+	public BoardResponseEntity saveBoard(BoardEntity board) {
+		BoardResponseEntity poongduckResponseEntity = new BoardResponseEntity();
 		
 		boardRepository.save(board);
 		poongduckResponseEntity.setContent(board);
@@ -50,8 +50,8 @@ public class BoardServiceImpl implements BoardService{
 	}
 
 	@Override
-	public PoongduckResponseEntity selectBoardDetail(int id) {
-		PoongduckResponseEntity poongduckResponseEntity = new PoongduckResponseEntity();
+	public BoardResponseEntity selectBoardDetail(int id) {
+		BoardResponseEntity poongduckResponseEntity = new BoardResponseEntity();
 		
 		poongduckResponseEntity.setContent(boardRepository.findById(id).get());
 		

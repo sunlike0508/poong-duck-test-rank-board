@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import poongduck.rank.service.RankService;
-import poongduck.response.entity.PoongduckResponseEntity;
+import poongduck.response.entity.RankResponseEntity;
 
 @CrossOrigin
 @RestController
@@ -18,7 +18,7 @@ public class RankController {
 	public static final String RANK = "/rank";
 
 	@GetMapping(value=RANK)
-	public PoongduckResponseEntity getRankList() throws Exception{
+	public RankResponseEntity getRankList() throws Exception{
 		
 		return rankService.getRankList();
 	}

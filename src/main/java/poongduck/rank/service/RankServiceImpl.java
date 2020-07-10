@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import poongduck.rank.repository.RankRepository;
-import poongduck.response.entity.PoongduckResponseEntity;
+import poongduck.response.entity.RankResponseEntity;
 
 @Service
 public class RankServiceImpl implements RankService {
@@ -13,11 +13,11 @@ public class RankServiceImpl implements RankService {
 	private RankRepository rankRepository;
 
 	@Override
-	public PoongduckResponseEntity getRankList() {
+	public RankResponseEntity getRankList() {
 		
-		PoongduckResponseEntity poongduckResponseEntity = new PoongduckResponseEntity();
-		poongduckResponseEntity.setRanking(rankRepository.findAllByOrderByPointDesc());
-		return poongduckResponseEntity;
+		RankResponseEntity rankResponseEntity = new RankResponseEntity();
+		rankResponseEntity.setRanking(rankRepository.findAllByOrderByPointDesc());
+		return rankResponseEntity;
 	}
 
 }

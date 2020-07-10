@@ -3,15 +3,15 @@ package poongduck.board.service;
 import javax.servlet.http.HttpServletRequest;
 
 import poongduck.board.entity.BoardEntity;
-import poongduck.response.entity.PoongduckResponseEntity;
+import poongduck.response.entity.BoardResponseEntity;
 
 
 public interface BoardService {
 
-	PoongduckResponseEntity selectBoardList(int page, HttpServletRequest request);
+	BoardResponseEntity selectBoardList(int page, HttpServletRequest request);
 
-	PoongduckResponseEntity saveBoard(BoardEntity board);
+	BoardResponseEntity saveBoard(BoardEntity board);
 
-	PoongduckResponseEntity selectBoardDetail(int id);
+	BoardResponseEntity selectBoardDetail(int id);
 
 }

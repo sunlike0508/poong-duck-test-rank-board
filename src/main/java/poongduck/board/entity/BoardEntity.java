@@ -46,10 +46,10 @@ public class BoardEntity {
 	@ApiModelProperty(value="글 작성 시간")
 	@Column(nullable=false)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = DATE_TIMEZONE)
-	private Date create_at = new Date(System.currentTimeMillis());
+	private Date created_at = new Date(System.currentTimeMillis());
 	
 	@ApiModelProperty(value="글 수정 시간")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = DATE_TIMEZONE)
-	private Date update_at;
+	private Date updated_at;
 
 }

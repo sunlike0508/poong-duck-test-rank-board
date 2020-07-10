@@ -1,9 +1,9 @@
 package poongduck.rank.service;
 
-import poongduck.response.entity.PoongduckResponseEntity;
+import poongduck.response.entity.RankResponseEntity;
 
 public interface RankService {
 
-	PoongduckResponseEntity getRankList();
+	RankResponseEntity getRankList();
 
 }

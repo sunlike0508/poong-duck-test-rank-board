@@ -33,7 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.javacrumbs.jsonunit.core.Option;
 import poongduck.board.entity.BoardEntity;
 import poongduck.board.service.BoardService;
-import poongduck.response.entity.PoongduckResponseEntity;
+import poongduck.response.entity.BoardResponseEntity;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
@@ -249,8 +249,8 @@ class BoardControllerTest {
 		return mockMVcResult.getResponse().getContentAsString();
 	}
 	
-	private PoongduckResponseEntity expectedJson(String expectedJson) throws IOException, JsonParseException, JsonMappingException {
-		return objectMapper.readValue(getClass().getClassLoader().getResourceAsStream(expectedJson), PoongduckResponseEntity.class);
+	private BoardResponseEntity expectedJson(String expectedJson) throws IOException, JsonParseException, JsonMappingException {
+		return objectMapper.readValue(getClass().getClassLoader().getResourceAsStream(expectedJson), BoardResponseEntity.class);
 	}
 
 	public BoardEntity makeGivenBoardEntity() {

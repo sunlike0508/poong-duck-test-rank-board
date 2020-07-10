@@ -17,6 +17,6 @@
 			"update_at": null
 		}
 	],
-	"previous_page": "http://localhost/board/2",
+	"previous_page": "http://localhost/board/?page=2",
 	"after_page": null
 }

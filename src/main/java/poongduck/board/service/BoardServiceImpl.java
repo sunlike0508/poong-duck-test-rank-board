@@ -9,7 +9,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import poongduck.board.entity.BoardEntity;
 import poongduck.board.repository.BoardRepository;
-import poongduck.response.entity.PoongduckResponseEntity;
+import poongduck.response.entity.BoardResponseEntity;
 
 @Service
 public class BoardServiceImpl implements BoardService{
@@ -17,44 +17,45 @@ public class BoardServiceImpl implements BoardService{
 	private static final String ID = "id";
 	private static final int FIVE = 5;
 	private static final Direction DESC = Direction.DESC;
+	private static final String QUERY_PAGE = "?page=";
 	
 	@Autowired
 	private BoardRepository boardRepository;
 
 	
 	@Override
-	public PoongduckResponseEntity selectBoardList(int page, HttpServletRequest request) {
-		PoongduckResponseEntity poongduckResponseEntity = new PoongduckResponseEntity();
+	public BoardResponseEntity selectBoardList(int page, HttpServletRequest request) {
+		BoardResponseEntity boardResponseEntity = new BoardResponseEntity();
 		Page<BoardEntity> boardPage = boardRepository.findAll(PageRequest.of(page-1, FIVE, DESC, ID));
-		poongduckResponseEntity.setBoard_list(boardPage.getContent());
+		boardResponseEntity.setBoard_list(boardPage.getContent());
 		
 		if(boardPage.hasPrevious()) {
-			poongduckResponseEntity.setPrevious_page(request.getRequestURL().toString() + (page - 1));
+			boardResponseEntity.setPrevious_page(request.getRequestURL().toString() + QUERY_PAGE + (page - 1));
 		}
 		
 		if(boardPage.hasNext()) {
-			poongduckResponseEntity.setAfter_page(request.getRequestURL().toString() + (page + 1));
+			boardResponseEntity.setAfter_page(request.getRequestURL().toString() + QUERY_PAGE + (page + 1));
 		}
 		
-		return poongduckResponseEntity;
+		return boardResponseEntity;
 	}
 
 	@Override
-	public PoongduckResponseEntity saveBoard(BoardEntity board) {
-		PoongduckResponseEntity poongduckResponseEntity = new PoongduckResponseEntity();
+	public BoardResponseEntity saveBoard(BoardEntity board) {
+		BoardResponseEntity boardResponseEntity = new BoardResponseEntity();
 		
 		boardRepository.save(board);
-		poongduckResponseEntity.setContent(board);
+		boardResponseEntity.setContent(board);
 		
-		return poongduckResponseEntity;
+		return boardResponseEntity;
 	}
 
 	@Override
-	public PoongduckResponseEntity selectBoardDetail(int id) {
-		PoongduckResponseEntity poongduckResponseEntity = new PoongduckResponseEntity();
+	public BoardResponseEntity selectBoardDetail(int id) {
+		BoardResponseEntity boardResponseEntity = new BoardResponseEntity();
 		
-		poongduckResponseEntity.setContent(boardRepository.findById(id).get());
+		boardResponseEntity.setContent(boardRepository.findById(id).get());
 		
-		return poongduckResponseEntity;
+		return boardResponseEntity;
 	}
 }

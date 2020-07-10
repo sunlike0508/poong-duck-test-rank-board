@@ -16,7 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import poongduck.board.entity.BoardEntity;
 import poongduck.board.service.BoardService;
-import poongduck.response.entity.PoongduckResponseEntity;
+import poongduck.response.entity.BoardResponseEntity;
 
 @Api("게시판 REST API")
 @CrossOrigin
@@ -35,7 +35,7 @@ public class BoardController {
 
 	@ApiOperation(value = "게시판 목록 조회")
 	@GetMapping(BOARD_LIST_URL)
-	public PoongduckResponseEntity openBoardList(@RequestParam(PAGE) int page, HttpServletRequest request) throws Exception{
+	public BoardResponseEntity openBoardList(@RequestParam(PAGE) int page, HttpServletRequest request) throws Exception{
 		
 		return boardService.selectBoardList(page, request);
 	}
@@ -43,14 +43,14 @@ public class BoardController {
 	@ApiOperation(value = "게시글 작성")
 	@PostMapping(path = BOARD_WRITE_URL)
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public PoongduckResponseEntity writeBoard(@RequestBody BoardEntity board) throws Exception{
+	public BoardResponseEntity writeBoard(@RequestBody BoardEntity board) throws Exception{
 		
 		return boardService.saveBoard(board);
 	}
 
 	@ApiOperation(value = "게시글 상세 내용 조회")
 	@GetMapping(BOARD_DETAIL)
-	public PoongduckResponseEntity getBoardDetail(@RequestParam(ID) int id) throws Exception{
+	public BoardResponseEntity getBoardDetail(@RequestParam(ID) int id) throws Exception{
 		
 		return boardService.selectBoardDetail(id);
 	}

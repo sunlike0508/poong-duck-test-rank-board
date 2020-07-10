@@ -33,7 +33,7 @@ public class BoardEntity {
 
 	@ApiModelProperty(value="사용자 ID")
 	@Column(nullable=false)
-	private String user_id;
+	private int user_id;
 	
 	@ApiModelProperty(value="글 제목")
 	@Column(nullable=false)

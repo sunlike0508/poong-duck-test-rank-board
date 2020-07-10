@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import poongduck.board.entity.BoardEntity;
 import poongduck.board.service.BoardService;
 import poongduck.response.entity.PoongduckResponseEntity;
 
+@CrossOrigin
 @RestController
 public class BoardController {
 	

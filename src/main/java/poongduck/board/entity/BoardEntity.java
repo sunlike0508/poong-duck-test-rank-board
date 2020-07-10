@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 
 @ApiModel(value="BoardEntity : 게시글 내용", description="게시글 내용")
 @Entity
-@Table(name="board")
+@Table(name="poong_duck_test_board")
 @NoArgsConstructor
 @Data
 public class BoardEntity {

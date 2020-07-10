@@ -17,6 +17,7 @@ public class BoardServiceImpl implements BoardService{
 	private static final String ID = "id";
 	private static final int FIVE = 5;
 	private static final Direction DESC = Direction.DESC;
+	private static final String QUERY_PAGE = "?page=";
 	
 	@Autowired
 	private BoardRepository boardRepository;
@@ -29,11 +30,11 @@ public class BoardServiceImpl implements BoardService{
 		boardResponseEntity.setBoard_list(boardPage.getContent());
 		
 		if(boardPage.hasPrevious()) {
-			boardResponseEntity.setPrevious_page(request.getRequestURL().toString() + "?page=" + (page - 1));
+			boardResponseEntity.setPrevious_page(request.getRequestURL().toString() + QUERY_PAGE + (page - 1));
 		}
 		
 		if(boardPage.hasNext()) {
-			boardResponseEntity.setAfter_page(request.getRequestURL().toString() + "?page=" + (page + 1));
+			boardResponseEntity.setAfter_page(request.getRequestURL().toString() + QUERY_PAGE + (page + 1));
 		}
 		
 		return boardResponseEntity;

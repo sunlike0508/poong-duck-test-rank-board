@@ -24,37 +24,37 @@ public class BoardServiceImpl implements BoardService{
 	
 	@Override
 	public BoardResponseEntity selectBoardList(int page, HttpServletRequest request) {
-		BoardResponseEntity poongduckResponseEntity = new BoardResponseEntity();
+		BoardResponseEntity boardResponseEntity = new BoardResponseEntity();
 		Page<BoardEntity> boardPage = boardRepository.findAll(PageRequest.of(page-1, FIVE, DESC, ID));
-		poongduckResponseEntity.setBoard_list(boardPage.getContent());
+		boardResponseEntity.setBoard_list(boardPage.getContent());
 		
 		if(boardPage.hasPrevious()) {
-			poongduckResponseEntity.setPrevious_page(request.getRequestURL().toString() + (page - 1));
+			boardResponseEntity.setPrevious_page(request.getRequestURL().toString() + "?page=" + (page - 1));
 		}
 		
 		if(boardPage.hasNext()) {
-			poongduckResponseEntity.setAfter_page(request.getRequestURL().toString() + (page + 1));
+			boardResponseEntity.setAfter_page(request.getRequestURL().toString() + "?page=" + (page + 1));
 		}
 		
-		return poongduckResponseEntity;
+		return boardResponseEntity;
 	}
 
 	@Override
 	public BoardResponseEntity saveBoard(BoardEntity board) {
-		BoardResponseEntity poongduckResponseEntity = new BoardResponseEntity();
+		BoardResponseEntity boardResponseEntity = new BoardResponseEntity();
 		
 		boardRepository.save(board);
-		poongduckResponseEntity.setContent(board);
+		boardResponseEntity.setContent(board);
 		
-		return poongduckResponseEntity;
+		return boardResponseEntity;
 	}
 
 	@Override
 	public BoardResponseEntity selectBoardDetail(int id) {
-		BoardResponseEntity poongduckResponseEntity = new BoardResponseEntity();
+		BoardResponseEntity boardResponseEntity = new BoardResponseEntity();
 		
-		poongduckResponseEntity.setContent(boardRepository.findById(id).get());
+		boardResponseEntity.setContent(boardRepository.findById(id).get());
 		
-		return poongduckResponseEntity;
+		return boardResponseEntity;
 	}
 }

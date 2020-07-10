@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 
 @ApiModel(value="RankUser : 랭크 유저", description="랭크 유저")
 @Entity
-@Table(name="rank_user")
+@Table(name="poong_duck_test_user")
 @NoArgsConstructor
 @Data
 public class RankUser {

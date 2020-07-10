@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import poongduck.board.entity.BoardEntity;
 import poongduck.board.service.BoardService;
 import poongduck.response.entity.PoongduckResponseEntity;
 
+@Api("게시판 REST API")
 @CrossOrigin
 @RestController
 public class BoardController {
@@ -30,12 +33,14 @@ public class BoardController {
 	@Autowired
 	private BoardService boardService;
 
+	@ApiOperation(value = "게시판 목록 조회")
 	@GetMapping(BOARD_LIST_URL)
 	public PoongduckResponseEntity openBoardList(@RequestParam(PAGE) int page, HttpServletRequest request) throws Exception{
 		
 		return boardService.selectBoardList(page, request);
 	}
 
+	@ApiOperation(value = "게시글 작성")
 	@PostMapping(path = BOARD_WRITE_URL)
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public PoongduckResponseEntity writeBoard(@RequestBody BoardEntity board) throws Exception{
@@ -43,6 +48,7 @@ public class BoardController {
 		return boardService.saveBoard(board);
 	}
 
+	@ApiOperation(value = "게시글 상세 내용 조회")
 	@GetMapping(BOARD_DETAIL)
 	public PoongduckResponseEntity getBoardDetail(@RequestParam(ID) int id) throws Exception{
 		

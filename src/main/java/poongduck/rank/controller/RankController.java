@@ -5,9 +5,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import poongduck.rank.service.RankService;
 import poongduck.response.entity.PoongduckResponseEntity;
 
+@Api("랭크 게시판 REST API")
 @CrossOrigin
 @RestController
 public class RankController {
@@ -17,6 +20,7 @@ public class RankController {
 	
 	public static final String RANK = "/rank";
 
+	@ApiOperation(value = "랭크 조회")
 	@GetMapping(value=RANK)
 	public PoongduckResponseEntity getRankList() throws Exception{
 		
